@@ -252,6 +252,7 @@ function spawnParticles(active) {
 function goHome() {
   document.getElementById('revealOverlay').classList.add('hidden');
   showScreen('homeScreen');
+  resetChaos();
 }
 
 function showScreen(id) {
@@ -330,6 +331,72 @@ function copyResult() {
       setTimeout(() => btn.textContent = orig, 2000);
     });
   }
+}
+
+// ── Scroll chaos system ──
+// Tracks wheel/touchmove accumulation and progressively spawns faces
+// until the entire screen is filled (~15-18s of steady scrolling)
+let chaosAccum = 0;
+let chaosLevel = 0;
+
+// deltaY units needed to reach each level
+const CHAOS_THRESHOLDS = [0, 300, 700, 1200, 1800, 2600, 3600, 5000, 6500];
+// faces added at each level
+const CHAOS_COUNTS     = [0,   4,    5,    7,   10,   15,   22,   35,   55];
+
+function onChaosScroll(delta) {
+  if (document.getElementById('homeScreen').classList.contains('hidden')) return;
+  chaosAccum += delta;
+  let lv = 0;
+  for (let i = 0; i < CHAOS_THRESHOLDS.length; i++) {
+    if (chaosAccum >= CHAOS_THRESHOLDS[i]) lv = i;
+  }
+  lv = Math.min(lv, CHAOS_THRESHOLDS.length - 1);
+  if (lv > chaosLevel) {
+    for (let l = chaosLevel + 1; l <= lv; l++) spawnChaosLevel(l);
+    chaosLevel = lv;
+  }
+}
+
+window.addEventListener('wheel',     e  => onChaosScroll(Math.abs(e.deltaY)), { passive: true });
+window.addEventListener('touchmove', () => onChaosScroll(30),                 { passive: true });
+
+function spawnChaosLevel(level) {
+  const c   = document.getElementById('facesContainer');
+  const n   = CHAOS_COUNTS[level] || 0;
+  const max = level >= CHAOS_THRESHOLDS.length - 1;
+
+  for (let i = 0; i < n; i++) {
+    // Faces get smaller at higher levels so they pack tighter
+    const w = max
+      ? 50 + Math.floor(Math.random() * 55)
+      : 75 + Math.floor(Math.random() * 80);
+
+    const el  = document.createElement('div');
+    el.className = 'floating-face';
+    const img = document.createElement('img');
+    img.src = FACE_IMG; img.width = w; img.draggable = false;
+    el.appendChild(img);
+
+    const useLeft = Math.random() > 0.4;
+    Object.assign(el.style, {
+      top:              Math.random() * 90 + '%',
+      left:             useLeft ? Math.random() * 85 + '%' : 'auto',
+      right:            useLeft ? 'auto' : Math.random() * 85 + '%',
+      animationDelay:   (Math.random() * 3).toFixed(1) + 's',
+      animationDuration:(4 + Math.random() * 6).toFixed(1) + 's',
+    });
+    el.addEventListener('click', showPopup);
+    c.appendChild(el);
+  }
+}
+
+function resetChaos() {
+  chaosAccum = 0;
+  chaosLevel = 0;
+  // Remove all chaos-spawned faces; keep the original FACE_SLOTS ones
+  const all = document.getElementById('facesContainer').querySelectorAll('.floating-face');
+  Array.from(all).slice(FACE_SLOTS.length).forEach(el => el.remove());
 }
 
 // ── Init ──
