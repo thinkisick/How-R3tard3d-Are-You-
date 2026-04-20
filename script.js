@@ -38,7 +38,7 @@ function spawnFaces() {
 // ── Popup ──
 function showPopup() {
   const pf = document.getElementById('popupFace');
-  pf.innerHTML = `<img src="${FACE_IMG}" width="120">`;
+  pf.innerHTML = `<img src="donottouchitr3tard.png" style="width:100%;max-width:280px;border-radius:16px;">`;
   document.getElementById('popupOverlay').classList.add('active');
 }
 function closePopup() {
