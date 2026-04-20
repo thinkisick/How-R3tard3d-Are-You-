@@ -97,7 +97,7 @@ function rateHandle() {
   // Show scanning state
   const btn = document.getElementById('rateBtn');
   btn.disabled = true;
-  btn.innerHTML = `<img src="${FACE_IMG}" class="btn-face-icon" alt=""> Scanning...`;
+  btn.innerHTML = `Scanning... <img src="${FACE_IMG}" class="btn-face-icon" alt="">`;
   document.getElementById('scanningBlock').classList.remove('hidden');
 
   setTimeout(() => {
@@ -117,7 +117,7 @@ function rateHandle() {
 
     // Reset button for next use
     btn.disabled = false;
-    btn.innerHTML = `<img src="${FACE_IMG}" class="btn-face-icon" alt=""> Rate me`;
+    btn.innerHTML = `Rate me <img src="${FACE_IMG}" class="btn-face-icon" alt="">`;
     document.getElementById('scanningBlock').classList.add('hidden');
 
     renderResult();
