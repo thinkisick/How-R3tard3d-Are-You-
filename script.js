@@ -190,59 +190,44 @@ function revealCard() {
 
 function renderResult() {
   const wrap = document.getElementById('cardDropWrap');
-
-  // Apply rarity class
   wrap.className = `card-drop-wrap rarity-${currentRarity.id}`;
 
-  // Top row
-  document.getElementById('resultHandle').textContent = '@' + currentHandle;
-  document.getElementById('scoreBig').textContent     = currentScore + '%';
+  document.getElementById('cardTitle').textContent     = currentTitle;
+  document.getElementById('scoreBig').textContent      = currentScore + '%';
+  document.getElementById('resultHandle').textContent  = '@' + currentHandle;
+  document.getElementById('scoreTier').textContent     = currentTier.tier;
+  document.getElementById('cardAbility').textContent   = currentAbility;
+  document.getElementById('tierDesc').textContent      = currentTier.desc;
+  document.getElementById('cardFlavor').textContent    = currentFlavor;
+  document.getElementById('cardRarityBar').textContent = currentRarity.label;
 
-  // Avatar — base64 for html2canvas; fallback to direct URL for display
+  // Avatar — rectangular art area
   const av = document.getElementById('resultAvatar');
   const img = document.createElement('img');
-  img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
   if (currentAvatarB64) {
     img.src = currentAvatarB64;
   } else {
     img.src = `https://unavatar.io/x/${encodeURIComponent(currentHandle)}`;
-    img.onerror = () => { img.src = FACE_IMG; img.style.objectFit = 'contain'; img.style.padding = '4px'; };
+    img.onerror = () => { img.src = FACE_IMG; img.style.objectFit = 'contain'; img.style.padding = '10px'; };
   }
   av.innerHTML = ''; av.appendChild(img);
 
-  // Texts
-  document.getElementById('cardTitle').textContent   = currentTitle;
-  document.getElementById('scoreTier').textContent   = currentTier.tier;
-  document.getElementById('cardAbility').textContent = currentAbility;
-  document.getElementById('cardFlavor').textContent  = currentFlavor;
-  document.getElementById('cardRarityBar').textContent = currentRarity.label;
-
-  // Stats
+  // Stats — 2 rows of 3, Pokémon weakness/resistance/retreat style
   const grid = document.getElementById('statsGrid');
   grid.innerHTML = '';
-  currentStats.forEach(s => {
-    const d = document.createElement('div');
-    d.className = 'card-stat';
-    d.innerHTML = `
-      <div class="card-stat-label">${s.label}</div>
-      <div class="card-stat-value">${s.fmt(s.raw)}</div>
-      <div class="card-stat-bar-wrap"><div class="card-stat-bar" style="width:${s.raw}%"></div></div>`;
-    grid.appendChild(d);
+  [currentStats.slice(0, 3), currentStats.slice(3, 6)].forEach(rowStats => {
+    const row = document.createElement('div');
+    row.className = 'pkm-stats-row';
+    rowStats.forEach(s => {
+      const cell = document.createElement('div');
+      cell.className = 'pkm-stat-cell';
+      cell.innerHTML = `<span class="pkm-stat-label">${s.label}</span><span class="pkm-stat-val">${s.fmt(s.raw)}</span>`;
+      row.appendChild(cell);
+    });
+    grid.appendChild(row);
   });
 
-  // Legendary particles
   spawnParticles(currentRarity.id === 'legendary');
-
-  // Score pill rarity color
-  const pill = document.getElementById('scoreBig');
-  const pillColors = {
-    legendary: 'linear-gradient(135deg,#f59e0b,#a855f7)',
-    mythic:    'linear-gradient(135deg,#ec4899,#a855f7)',
-    epic:      'linear-gradient(135deg,#f97316,#ec4899)',
-    rare:      'linear-gradient(135deg,#6366f1,#8b5cf6)',
-    common:    'rgba(255,255,255,0.1)',
-  };
-  pill.style.background = pillColors[currentRarity.id] || pillColors.common;
 }
 
 function spawnParticles(active) {

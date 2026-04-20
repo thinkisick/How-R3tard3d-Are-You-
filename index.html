@@ -61,23 +61,48 @@
       <div class="loot-card" id="resultCard">
         <div class="card-particles" id="cardParticles"></div>
 
-        <div class="card-top-row">
-          <span class="card-handle" id="resultHandle"></span>
-          <span class="card-score-pill" id="scoreBig"></span>
+        <!-- Header: name + score (like Pokémon name + HP) -->
+        <div class="pkm-header">
+          <div class="pkm-name-side">
+            <span class="pkm-stage">DEGEN</span>
+            <span class="pkm-name" id="cardTitle"></span>
+          </div>
+          <div class="pkm-score-side">
+            <span class="pkm-score-label">SCORE</span>
+            <span class="pkm-score" id="scoreBig"></span>
+            <img src="face.png" class="pkm-typeicon" alt="">
+          </div>
         </div>
 
-        <div class="card-avatar-wrap">
-          <div class="card-avatar" id="resultAvatar"></div>
+        <!-- Image (like Pokémon art area) -->
+        <div class="pkm-img-wrap">
+          <div class="pkm-img-box" id="resultAvatar"></div>
         </div>
 
-        <div class="card-title" id="cardTitle"></div>
-        <div class="card-tier-badge" id="scoreTier"></div>
-        <div class="card-ability" id="cardAbility"></div>
+        <!-- Caption under image -->
+        <div class="pkm-caption">
+          <span id="resultHandle"></span>
+          <span class="pkm-dot">·</span>
+          <span id="scoreTier"></span>
+        </div>
 
-        <div class="card-stats-grid" id="statsGrid"></div>
+        <!-- Ability / move -->
+        <div class="pkm-moves">
+          <div class="pkm-move-header">
+            <img src="face.png" class="pkm-cost-icon" alt="">
+            <span class="pkm-move-name" id="cardAbility"></span>
+          </div>
+          <p class="pkm-move-desc" id="tierDesc"></p>
+        </div>
 
-        <div class="card-flavor" id="cardFlavor"></div>
-        <div class="card-rarity-bar" id="cardRarityBar"></div>
+        <!-- Stats strip (like weakness / resistance / retreat) -->
+        <div class="pkm-stats-strip" id="statsGrid"></div>
+
+        <!-- Footer -->
+        <div class="pkm-footer">
+          <span class="pkm-flavor" id="cardFlavor"></span>
+          <span class="pkm-rarity" id="cardRarityBar"></span>
+        </div>
       </div>
     </div>
 
