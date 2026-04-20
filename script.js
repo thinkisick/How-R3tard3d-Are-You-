@@ -102,7 +102,12 @@ function rateHandle() {
 
   setTimeout(() => {
     // Compute scores
-    currentScore = Math.round(seededRand(seed, 'main') * 100);
+    const HALL_OF_FAME = ['thinkisick', 'dreiki10'];
+    if (HALL_OF_FAME.includes(seed)) {
+      currentScore = 100;
+    } else {
+      currentScore = Math.round(seededRand(seed, 'main') * 100);
+    }
     currentTier  = TIERS.find(t => currentScore >= t.min && currentScore <= t.max) || TIERS[TIERS.length - 1];
     currentStats = STATS.map(s => ({
       label: s.label,
