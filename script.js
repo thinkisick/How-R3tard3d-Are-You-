@@ -94,19 +94,30 @@ function rateHandle() {
   currentHandle = handle;
   const seed = handle.toLowerCase();
 
-  // Main score 0-100
-  currentScore = Math.round(seededRand(seed, 'main') * 100);
-  currentTier  = TIERS.find(t => currentScore >= t.min && currentScore <= t.max) || TIERS[TIERS.length - 1];
+  // Show scanning state
+  const btn = document.getElementById('rateBtn');
+  btn.disabled = true;
+  btn.innerHTML = `<img src="${FACE_IMG}" class="btn-face-icon" alt=""> Scanning...`;
+  document.getElementById('scanningBlock').classList.remove('hidden');
 
-  // Individual stats
-  currentStats = STATS.map(s => ({
-    label: s.label,
-    raw:   Math.round(seededRand(seed, s.key) * 100),
-    fmt:   s.fmt,
-  }));
+  setTimeout(() => {
+    // Compute scores
+    currentScore = Math.round(seededRand(seed, 'main') * 100);
+    currentTier  = TIERS.find(t => currentScore >= t.min && currentScore <= t.max) || TIERS[TIERS.length - 1];
+    currentStats = STATS.map(s => ({
+      label: s.label,
+      raw:   Math.round(seededRand(seed, s.key) * 100),
+      fmt:   s.fmt,
+    }));
 
-  renderResult();
-  showScreen('resultScreen');
+    // Reset button for next use
+    btn.disabled = false;
+    btn.innerHTML = `<img src="${FACE_IMG}" class="btn-face-icon" alt=""> Rate me`;
+    document.getElementById('scanningBlock').classList.add('hidden');
+
+    renderResult();
+    showScreen('resultScreen');
+  }, 2200);
 }
 
 function renderResult() {

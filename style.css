@@ -163,10 +163,65 @@ body {
   transition: transform 0.15s, box-shadow 0.15s;
 }
 .btn-rate:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(0,0,0,0.3); }
+.btn-rate:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.btn-face-icon {
+  width: 28px;
+  height: auto;
+  vertical-align: middle;
+  margin-right: 6px;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.3));
+}
 
 .input-hint {
   font-size: 0.78rem;
   color: rgba(255,255,255,0.4);
+}
+
+/* ── Scanning block ── */
+.scanning-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-top: 36px;
+}
+.scanning-block.hidden { display: none; }
+
+.scanning-face {
+  width: 110px;
+  height: auto;
+  filter: drop-shadow(0 0 20px rgba(180,130,255,0.6));
+  animation: scanPulse 1.4s ease-in-out infinite;
+}
+
+@keyframes scanPulse {
+  0%, 100% { transform: scale(1);   filter: drop-shadow(0 0 16px rgba(180,130,255,0.5)); }
+  50%       { transform: scale(1.08); filter: drop-shadow(0 0 32px rgba(200,160,255,0.85)); }
+}
+
+.scanning-text {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #D4B0FF;
+}
+
+.scanning-dots {
+  display: flex;
+  gap: 8px;
+}
+.scanning-dots span {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #D4B0FF;
+  animation: dotBounce 1.2s ease-in-out infinite;
+}
+.scanning-dots span:nth-child(2) { animation-delay: 0.2s; }
+.scanning-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes dotBounce {
+  0%, 80%, 100% { transform: scale(0.7); opacity: 0.4; }
+  40%           { transform: scale(1.2); opacity: 1; }
 }
 
 /* ── Result Card ── */
