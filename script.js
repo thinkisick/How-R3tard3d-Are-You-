@@ -50,40 +50,40 @@ function seededRand(seed, salt) { return hashStr(seed + salt); }
 function seededPick(seed, salt, arr) { return arr[Math.floor(seededRand(seed, salt) * arr.length)]; }
 
 // ── Content pools (random each time for virality) ──
-const TITLES   = ['Chaos Engine','Timeline Menace','Reply Goblin','Hot Take Machine','Thread Warrior','Ratio King','Degen Oracle','Touch Grass Never','Unhinged Poster'];
-const ABILITIES = ['⚡ Ratio Blast','🔥 Opinion Drop','🌀 Reply Storm','💥 Quote Attack','📡 Viral Misfire','🎯 Clout Sniper','🧠 Galaxy Brain','☠️ Main Character Mode'];
+const TITLES   = ['Monad R3tard','Floor Sweeper','Never Selling','Diamond Paws','NFT Goblin','Cope Machine','333 Holder','Based Degen','Rug Survivor','Certified R3tard'];
+const ABILITIES = ['🖼️ Floor Sweep','💎 Never Selling','🐸 R3tard Energy','🔮 Monad Maxi','📉 Buy The Dip','🤡 Rug Accepted','🧠 Zero Brain Cells','⛓️ On-Chain Always','🎰 Degen Mode','💀 Paper Hands Never'];
 const FLAVORS  = [
-  '"this will age badly"','"internet never forgets"','"why would you post this"',
-  '"main character detected"','"touching grass not found"','"unhinged but consistent"',
-  '"timeline is cooked"','"ratio incoming"',
+  '"just a bunch of r3tards on monad"','"never sell your r3tard"','"created in 2 days, held forever"',
+  '"333 supply, infinite cope"','"dreiki said hold"','"ngmi but make it art"',
+  '"floor is a mindset"','"333 r3tards can\'t be wrong"','"monad or ngmi"','"rug proof, dreiki cares"',
 ];
 function randPick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
 // ── Rarity system ──
 const RARITIES = [
-  { id: 'legendary', min: 100, max: 100, label: '✦ LEGENDARY ✦' },
-  { id: 'mythic',    min: 90,  max: 99,  label: '✦ MYTHIC ✦'    },
-  { id: 'epic',      min: 70,  max: 89,  label: '✦ EPIC ✦'      },
-  { id: 'rare',      min: 40,  max: 69,  label: '✦ RARE ✦'      },
-  { id: 'common',    min: 10,  max: 39,  label: '✦ COMMON ✦'    },
-  { id: 'secret',    min: 0,   max: 9,   label: '? ? SECRET ? ?' },
+  { id: 'legendary', min: 100, max: 100, label: '✦ 1 OF 333 ✦'       },
+  { id: 'mythic',    min: 90,  max: 99,  label: '✦ BASED ✦'          },
+  { id: 'epic',      min: 70,  max: 89,  label: '✦ DEGEN ✦'          },
+  { id: 'rare',      min: 40,  max: 69,  label: '✦ RARE ✦'           },
+  { id: 'common',    min: 10,  max: 39,  label: '✦ COMMON ✦'         },
+  { id: 'secret',    min: 0,   max: 9,   label: '? FLOOR IS ZERO ?'  },
 ];
 
 const TIERS = [
-  { min: 0,   max: 19,  tier: 'Barely R3tard3d',   desc: "Disappointingly functional. Seek more chaos." },
-  { min: 20,  max: 39,  tier: 'Mild R3tard3d',      desc: "A solid baseline. Bad choices, but only sometimes." },
-  { min: 40,  max: 59,  tier: 'Average R3tard3d',   desc: "Right in the sweet spot. Chaos energy: moderate." },
-  { min: 60,  max: 74,  tier: 'Certified R3tard3d', desc: "Consistently unhinged. Respect." },
-  { min: 75,  max: 89,  tier: 'Elite R3tard3d',     desc: "Science cannot explain your decision-making." },
-  { min: 90,  max: 99,  tier: 'GOD-TIER R3tard3d',  desc: "You are the reason warning labels exist." },
-  { min: 100, max: 100, tier: 'GOD-TIER R3tard3d',  desc: "Undeniable. Irreversible. A true legend." },
+  { min: 0,   max: 19,  tier: 'Normie R3tard',      desc: "Barely qualifies. Probably sells at floor." },
+  { min: 20,  max: 39,  tier: 'Paper Hands',         desc: "Would sell at 2x. Dreiki is disappointed." },
+  { min: 40,  max: 59,  tier: 'Mid R3tard',          desc: "Functional degen. Occasionally based." },
+  { min: 60,  max: 74,  tier: 'Certified R3tard',    desc: "Dreiki would be proud. Keep holding." },
+  { min: 75,  max: 89,  tier: 'Elite R3tard',        desc: "333 supply. You are built different." },
+  { min: 90,  max: 99,  tier: 'GOD-TIER R3tard',     desc: "You are the reason Dreiki drew these." },
+  { min: 100, max: 100, tier: 'LEGENDARY R3TARD',    desc: "One of 333. Never selling. GM forever." },
 ];
 
 const STATS = [
   { key: 'degen',      label: 'Degen Level',        fmt: p => p + '%' },
   { key: 'braincell',  label: 'Brain Cells Left',   fmt: p => p + ' / 100' },
   { key: 'touchgrass', label: 'Touch Grass',        fmt: p => p + '%' },
-  { key: 'online',     label: 'Chronically Online', fmt: p => p + '%' },
+  { key: 'hodl',       label: 'HODL Strength',      fmt: p => p + '%' },
   { key: 'posting',    label: 'Unhinged Posts/Day', fmt: p => (p / 10).toFixed(1) },
   { key: 'nft',        label: 'Rug Pull Survivor',  fmt: p => p + '%' },
 ];
@@ -282,20 +282,48 @@ handleInputEl.addEventListener('input', () => {
 handleInputEl.addEventListener('keydown', e => { if (e.key === 'Enter') rateHandle(); });
 
 // ── Download card via html2canvas ──
-// Avatar is already base64 in the DOM, so no CORS issues
-function downloadCard() {
+async function downloadCard() {
   const btn = document.querySelector('.btn-download');
   btn.textContent = '⏳ Generating...'; btn.disabled = true;
 
-  html2canvas(document.getElementById('resultCard'), {
-    scale: 2, backgroundColor: '#0f0820', useCORS: false, logging: false,
-  }).then(canvas => {
-    const a = document.createElement('a');
-    a.download = 'r3tard3d-card.png';
-    a.href = canvas.toDataURL('image/png');
-    a.click();
-    btn.textContent = '⬇ Download Card'; btn.disabled = false;
-  }).catch(() => { btn.textContent = '⬇ Download Card'; btn.disabled = false; });
+  // If avatar is a direct URL (not base64), try once more to get base64
+  const avImg = document.querySelector('#resultAvatar img');
+  if (avImg && avImg.src && !avImg.src.startsWith('data:') && avImg.src !== location.href) {
+    const b64 = await fetchAvatarBase64(currentHandle);
+    if (b64) { avImg.src = b64; await new Promise(r => setTimeout(r, 80)); }
+  }
+
+  const card    = document.getElementById('resultCard');
+  const spinEl  = document.getElementById('cardBorderSpin');
+  const titleEl = document.getElementById('cardTitle');
+
+  // Patch DOM so html2canvas renders correctly
+  // (backdrop-filter, gradient text, spinning transforms all break it)
+  const restores = [];
+  function patch(el, prop, val) {
+    restores.push([el, prop, el.style[prop]]);
+    el.style[prop] = val;
+  }
+  patch(card,    'backdropFilter',       'none');
+  patch(card,    'webkitBackdropFilter', 'none');
+  patch(card,    'background',           'rgb(15,8,30)');
+  patch(spinEl,  'animation',            'none');
+  patch(spinEl,  'transform',            'rotate(0deg)');
+  patch(titleEl, 'webkitTextFillColor',  '#fff');
+  patch(titleEl, 'backgroundImage',      'none');
+
+  const restore = () => restores.forEach(([el, prop, orig]) => { el.style[prop] = orig; });
+
+  html2canvas(card, { scale: 2, backgroundColor: '#0f0820', useCORS: true, logging: false })
+    .then(canvas => {
+      restore();
+      const a = document.createElement('a');
+      a.download = 'r3tard3d-card.png';
+      a.href = canvas.toDataURL('image/png');
+      a.click();
+      btn.textContent = '⬇ Download Card'; btn.disabled = false;
+    })
+    .catch(() => { restore(); btn.textContent = '⬇ Download Card'; btn.disabled = false; });
 }
 
 // ── Share / Copy ──
