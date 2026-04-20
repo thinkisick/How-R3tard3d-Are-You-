@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How R3tard3d Are You?</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Floating Faces -->
+  <div class="faces-container" id="facesContainer"></div>
+
+  <!-- Touch Popup -->
+  <div class="popup-overlay" id="popupOverlay">
+    <div class="popup-box">
+      <span>Do not touch it r3tard</span>
+      <button onclick="closePopup()">ok</button>
+    </div>
+  </div>
+
+  <!-- QUIZ SECTION -->
+  <div class="screen" id="homeScreen">
+    <div class="hero">
+      <h1 class="title">How R3tard3d<br/>Are You?</h1>
+      <p class="subtitle">Find out your r3tard3d level 🧠</p>
+      <button class="btn-main" onclick="startQuiz()">Start Quiz</button>
+    </div>
+  </div>
+
+  <div class="screen hidden" id="quizScreen">
+    <div class="quiz-card">
+      <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+      <p class="question-num" id="questionNum">Question 1 / 10</p>
+      <p class="question-text" id="questionText"></p>
+      <div class="options" id="optionsContainer"></div>
+    </div>
+  </div>
+
+  <div class="screen hidden" id="resultScreen">
+    <div class="result-card" id="resultCard">
+      <div class="result-inner">
+        <div class="result-face" id="resultFaceSvg"></div>
+        <h2 class="result-title">R3tard3d Score</h2>
+        <div class="score-number" id="scoreNumber"></div>
+        <p class="score-label" id="scoreLabel"></p>
+        <p class="score-desc" id="scoreDesc"></p>
+      </div>
+    </div>
+    <div class="share-buttons">
+      <button class="btn-share btn-download" onclick="downloadCard()">⬇ Download Card</button>
+      <button class="btn-share btn-twitter" onclick="shareTwitter()">𝕏 Share on Twitter</button>
+      <button class="btn-share btn-copy" onclick="copyResult()">📋 Copy Result</button>
+    </div>
+    <button class="btn-retry" onclick="retryQuiz()">Try Again</button>
+    <p class="disclaimer">
+      Not affiliated with X / Twitter or <a href="https://x.com/r3tardsNFT" target="_blank" rel="noopener">@r3tards</a> · For entertainment only
+    </p>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <span>Made by <a href="https://x.com/thinkisick" target="_blank" rel="noopener">sick</a></span>
+    <span class="footer-sep">·</span>
+    <span>Powered by r3tard for r3tards</span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
