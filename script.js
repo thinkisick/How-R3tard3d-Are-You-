@@ -1,79 +1,74 @@
 'use strict';
 
-// ── SVG Face — accurate pepe-smoking sticker ──
-// Wide flat brown blob, heavy-lidded stoned eyes, cigarette bottom-left, smoke wisps
+// ── SVG Face — pepe smoking sticker (wide flat blob, heavy lids, cig) ──
 function makeFaceSVG(w, h) {
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 160" width="${w}" height="${h}">
-  <!-- Body: wide flat blob with wavy bumpy edges -->
-  <path d="
-    M 38,80
-    C 32,55 36,32 62,24
-    C 82,18 108,14 145,16
-    C 175,18 210,24 230,38
-    C 248,50 250,68 244,86
-    C 238,104 224,118 200,124
-    C 178,130 148,134 118,132
-    C 90,130 62,126 48,114
-    C 34,103 40,98 38,80 Z"
-    fill="#7A3B1E" stroke="#111" stroke-width="5.5" stroke-linejoin="round"/>
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 170" width="${w}" height="${h}">
+  <!-- Body: wide flat organic blob -->
+  <path d="M 38,85 C 33,58 42,30 75,22 C 98,16 135,12 168,15
+           C 200,18 240,28 260,44 C 278,57 278,75 268,92
+           C 258,110 240,125 210,132 C 182,139 148,141 115,138
+           C 84,135 55,124 40,108 C 30,96 40,95 38,85 Z"
+    fill="#7A3B1E" stroke="#111" stroke-width="6.5" stroke-linejoin="round"/>
 
-  <!-- Skin wrinkle / fold lines -->
-  <path d="M 60,110 Q 90,104 120,108 Q 155,112 185,106 Q 210,102 225,112"
-    fill="none" stroke="#5C2A10" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+  <!-- Lower face wrinkle -->
+  <path d="M 58,118 Q 95,110 140,114 Q 178,118 210,110 Q 232,106 248,114"
+    fill="none" stroke="#5A2810" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
 
-  <!-- LEFT EYE white -->
-  <ellipse cx="100" cy="66" rx="32" ry="26" fill="white" stroke="#111" stroke-width="4.5"/>
+  <!-- LEFT EYE white (full ellipse) -->
+  <ellipse cx="110" cy="72" rx="33" ry="27" fill="white" stroke="#111" stroke-width="5"/>
+  <!-- LEFT pupil (low, stoned look) -->
+  <ellipse cx="116" cy="82" rx="15" ry="17" fill="#111"/>
+  <!-- LEFT eyelid cover: filled brown shape covering top 58% of eye -->
+  <!-- Eyelid bottom boundary = y≈74 (a Q-curve sagging down = heavy drooping lid) -->
+  <path d="M 77,74 Q 110,82 143,74 L 143,44 L 77,44 Z" fill="#7A3B1E"/>
+  <!-- LEFT eyelid bottom edge (visible curved line) -->
+  <path d="M 77,74 Q 110,82 143,74" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"/>
+  <!-- LEFT glare dot (below lid line, visible) -->
+  <circle cx="122" cy="78" r="4.5" fill="white"/>
+  <!-- LEFT inner-corner fold -->
+  <path d="M 78,77 Q 73,83 75,90" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>
+
   <!-- RIGHT EYE white -->
-  <ellipse cx="178" cy="64" rx="32" ry="26" fill="white" stroke="#111" stroke-width="4.5"/>
+  <ellipse cx="198" cy="70" rx="33" ry="27" fill="white" stroke="#111" stroke-width="5"/>
+  <!-- RIGHT pupil -->
+  <ellipse cx="204" cy="80" rx="15" ry="17" fill="#111"/>
+  <!-- RIGHT eyelid cover -->
+  <path d="M 165,72 Q 198,80 231,72 L 231,42 L 165,42 Z" fill="#7A3B1E"/>
+  <!-- RIGHT eyelid bottom edge -->
+  <path d="M 165,72 Q 198,80 231,72" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"/>
+  <!-- RIGHT glare dot -->
+  <circle cx="210" cy="76" r="4.5" fill="white"/>
+  <!-- RIGHT outer-corner fold -->
+  <path d="M 230,75 Q 237,81 235,88" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>
 
-  <!-- Left pupil (slightly right-center, stoned look) -->
-  <ellipse cx="106" cy="72" rx="15" ry="17" fill="#111"/>
-  <!-- Right pupil -->
-  <ellipse cx="183" cy="70" rx="15" ry="17" fill="#111"/>
+  <!-- LEFT EYEBROW — thick, inner end dips down (furrowed/concerned look) -->
+  <path d="M 76,50 Q 110,38 144,48" fill="none" stroke="#111" stroke-width="8" stroke-linecap="round"/>
+  <!-- RIGHT EYEBROW -->
+  <path d="M 163,46 Q 197,36 232,46" fill="none" stroke="#111" stroke-width="8" stroke-linecap="round"/>
+  <!-- Brow inner furrow dip (between brows, making them look heavy/mean) -->
+  <path d="M 142,49 L 149,56" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"/>
+  <path d="M 163,46 L 157,53" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"/>
 
-  <!-- Eye glare left -->
-  <circle cx="112" cy="64" r="4.5" fill="white"/>
-  <!-- Eye glare right -->
-  <circle cx="189" cy="62" r="4.5" fill="white"/>
+  <!-- CIGARETTE sticking out lower-left (~14° downward) -->
+  <rect x="3" y="97" width="72" height="12" rx="6"
+    fill="#EAE0C0" stroke="#111" stroke-width="2.5"
+    transform="rotate(-14 39 103)"/>
+  <!-- Filter section -->
+  <rect x="55" y="95" width="20" height="12" rx="5.5"
+    fill="#D0C090" stroke="#111" stroke-width="2"
+    transform="rotate(-14 65 101)"/>
+  <!-- Ash band -->
+  <rect x="24" y="98" width="11" height="8" rx="2"
+    fill="#999" opacity="0.5" transform="rotate(-14 29 102)"/>
+  <!-- Ember (red glow) -->
+  <circle cx="6" cy="101" r="7" fill="#C03010" transform="rotate(-14 6 101)"/>
+  <circle cx="6" cy="101" r="4" fill="#FF6030" transform="rotate(-14 6 101)" opacity="0.9"/>
 
-  <!-- LEFT heavy eyelid (covers ~55% of eye from top) -->
-  <path d="M 68,58 Q 100,42 132,58 L 132,66 Q 100,55 68,66 Z"
-    fill="#7A3B1E" stroke="#111" stroke-width="4"/>
-  <!-- RIGHT heavy eyelid -->
-  <path d="M 146,56 Q 178,40 210,56 L 210,64 Q 178,53 146,64 Z"
-    fill="#7A3B1E" stroke="#111" stroke-width="4"/>
-
-  <!-- Left eyebrow — thick, slightly furrowed inward -->
-  <path d="M 66,44 Q 100,32 130,42"
-    fill="none" stroke="#111" stroke-width="6" stroke-linecap="round"/>
-  <!-- Right eyebrow -->
-  <path d="M 148,40 Q 178,30 208,42"
-    fill="none" stroke="#111" stroke-width="6" stroke-linecap="round"/>
-
-  <!-- Eyebrow inner furrow crease left -->
-  <path d="M 128,43 Q 135,38 130,42" fill="none" stroke="#111" stroke-width="3" stroke-linecap="round"/>
-  <!-- Eyebrow inner furrow crease right -->
-  <path d="M 148,40 Q 143,36 148,41" fill="none" stroke="#111" stroke-width="3" stroke-linecap="round"/>
-
-  <!-- CIGARETTE — angled, sticking out bottom-left -->
-  <!-- Cigarette body (tan/cream) -->
-  <rect x="4" y="93" width="62" height="10" rx="5"
-    fill="#E8DDB5" stroke="#111" stroke-width="2.5"
-    transform="rotate(-8, 35, 98)"/>
-  <!-- Filter tip (slightly lighter) -->
-  <rect x="48" y="91" width="18" height="10" rx="4"
-    fill="#D4C8A0" stroke="#111" stroke-width="2"
-    transform="rotate(-8, 57, 96)"/>
-  <!-- Lit end / ember -->
-  <circle cx="8" cy="99" r="5.5" fill="#D0390E" transform="rotate(-8, 8, 99)"/>
-  <circle cx="8" cy="99" r="3" fill="#FF6A3D" transform="rotate(-8, 8, 99)" opacity="0.8"/>
-
-  <!-- Smoke wisp 1 -->
-  <path d="M 4,92 C -2,78 2,64 -4,50 C -8,38 -2,26 -6,14"
-    fill="none" stroke="rgba(200,200,200,0.65)" stroke-width="3" stroke-linecap="round"/>
-  <!-- Smoke wisp 2 -->
-  <path d="M 12,90 C 18,76 14,62 20,50 C 24,40 18,28 24,16"
-    fill="none" stroke="rgba(200,200,200,0.45)" stroke-width="2.2" stroke-linecap="round"/>
+  <!-- SMOKE wisps from ember -->
+  <path d="M 1,91 C -5,77 -1,63 -7,49 C -11,37 -5,24 -9,11"
+    fill="none" stroke="rgba(195,195,195,0.75)" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M 12,89 C 18,75 14,61 20,48 C 24,36 18,23 23,10"
+    fill="none" stroke="rgba(195,195,195,0.5)" stroke-width="2.5" stroke-linecap="round"/>
 </svg>`;
 }
 
