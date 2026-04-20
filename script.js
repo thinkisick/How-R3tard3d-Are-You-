@@ -50,33 +50,34 @@ function seededRand(seed, salt) { return hashStr(seed + salt); }
 function seededPick(seed, salt, arr) { return arr[Math.floor(seededRand(seed, salt) * arr.length)]; }
 
 // ── Content pools (random each time for virality) ──
-const TITLES   = ['Monad R3tard','Floor Sweeper','Never Selling','Diamond Paws','NFT Goblin','Cope Machine','333 Holder','Based Degen','Rug Survivor','Certified R3tard'];
-const ABILITIES = ['🖼️ Floor Sweep','💎 Never Selling','🐸 R3tard Energy','🔮 Monad Maxi','📉 Buy The Dip','🤡 Rug Accepted','🧠 Zero Brain Cells','⛓️ On-Chain Always','🎰 Degen Mode','💀 Paper Hands Never'];
+const TITLES   = ['Diamond Paws','Floor Goblin','Cope Machine','Unwashed Holder','NPC Destroyer','On-Chain Menace','Frog-Brained','Definitely Not Selling','Smoothbrain Supreme','Ape-In Protocol'];
+const ABILITIES = ['💎 Diamond Grip','🐸 Frog Brain Active','📉 Buy High Sell Never','🤝 Rug Accepted','🧠 Smoothbrain Mode','🎰 Ape In Protocol','💀 Still Not Selling','⛓️ On-Chain Forever','🔮 Cope and Hold','🤡 Trust the Vision'];
 const FLAVORS  = [
-  '"just a bunch of r3tards on monad"','"never sell your r3tard"','"created in 2 days, held forever"',
-  '"333 supply, infinite cope"','"dreiki said hold"','"ngmi but make it art"',
-  '"floor is a mindset"','"333 r3tards can\'t be wrong"','"monad or ngmi"','"rug proof, dreiki cares"',
+  '"sent it before looking"','"floor is for quitters"','"the vision is still intact"',
+  '"not financial advice, just vibes"','"bought the top, staying put"',
+  '"brain smooth, hands strong"','"if it goes to zero at least i have the art"',
+  '"roadmap: hold. that\'s it"','"ngmi but at least i\'m early"','"sold? never heard of her"',
 ];
 function randPick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
 // ── Rarity system ──
 const RARITIES = [
-  { id: 'legendary', min: 100, max: 100, label: '✦ 1 OF 333 ✦'       },
-  { id: 'mythic',    min: 90,  max: 99,  label: '✦ BASED ✦'          },
-  { id: 'epic',      min: 70,  max: 89,  label: '✦ DEGEN ✦'          },
-  { id: 'rare',      min: 40,  max: 69,  label: '✦ RARE ✦'           },
-  { id: 'common',    min: 10,  max: 39,  label: '✦ COMMON ✦'         },
-  { id: 'secret',    min: 0,   max: 9,   label: '? FLOOR IS ZERO ?'  },
+  { id: 'legendary', min: 100, max: 100, label: '✦ NEVER SELLING ✦'     },
+  { id: 'mythic',    min: 90,  max: 99,  label: '✦ BASED ✦'             },
+  { id: 'epic',      min: 70,  max: 89,  label: '✦ DEGEN ✦'             },
+  { id: 'rare',      min: 40,  max: 69,  label: '✦ RARE ✦'              },
+  { id: 'common',    min: 10,  max: 39,  label: '✦ COMMON ✦'            },
+  { id: 'secret',    min: 0,   max: 9,   label: '? FLOOR IS A FEELING ?' },
 ];
 
 const TIERS = [
-  { min: 0,   max: 19,  tier: 'Normie R3tard',      desc: "Barely qualifies. Probably sells at floor." },
-  { min: 20,  max: 39,  tier: 'Paper Hands',         desc: "Would sell at 2x. Dreiki is disappointed." },
-  { min: 40,  max: 59,  tier: 'Mid R3tard',          desc: "Functional degen. Occasionally based." },
-  { min: 60,  max: 74,  tier: 'Certified R3tard',    desc: "Dreiki would be proud. Keep holding." },
-  { min: 75,  max: 89,  tier: 'Elite R3tard',        desc: "333 supply. You are built different." },
-  { min: 90,  max: 99,  tier: 'GOD-TIER R3tard',     desc: "You are the reason Dreiki drew these." },
-  { min: 100, max: 100, tier: 'LEGENDARY R3TARD',    desc: "One of 333. Never selling. GM forever." },
+  { min: 0,   max: 19,  tier: 'Normie Behavior',   desc: "Suspiciously functional. Touch dirt." },
+  { min: 20,  max: 39,  tier: 'Paper Hands',        desc: "Would fold at the first red candle." },
+  { min: 40,  max: 59,  tier: 'Mild Degen',         desc: "Occasionally unhinged. Has potential." },
+  { min: 60,  max: 74,  tier: 'Certified Degen',    desc: "Made choices. No regrets. Respectable." },
+  { min: 75,  max: 89,  tier: 'Elite R3tard',       desc: "Doctors cannot explain your risk tolerance." },
+  { min: 90,  max: 99,  tier: 'GOD-TIER',           desc: "You bought the top and called it a W." },
+  { min: 100, max: 100, tier: 'LEGENDARY R3TARD',   desc: "Never sold. Never will. You are the art." },
 ];
 
 const STATS = [
