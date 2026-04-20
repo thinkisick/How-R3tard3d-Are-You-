@@ -156,11 +156,12 @@ async function rateHandle() {
 // Prepare card data without showing it yet (tap-to-reveal)
 function prepareResult() {
   renderResult();
-  // Show reveal overlay, hide card
+  // Show ONLY the reveal overlay, everything else hidden
   document.getElementById('revealOverlay').classList.remove('hidden', 'dismissing');
   document.getElementById('cardDropWrap').classList.add('hidden');
-  document.querySelectorAll('.share-buttons, .btn-retry, .disclaimer:last-of-type')
-    .forEach(el => el.style.visibility = 'hidden');
+  document.getElementById('shareButtons').classList.add('hidden');
+  document.getElementById('retryBtn').classList.add('hidden');
+  document.getElementById('resultDisclaimer').classList.add('hidden');
 }
 
 function revealCard() {
@@ -169,8 +170,9 @@ function revealCard() {
   setTimeout(() => {
     overlay.classList.add('hidden');
     document.getElementById('cardDropWrap').classList.remove('hidden');
-    document.querySelectorAll('.share-buttons, .btn-retry, .disclaimer:last-of-type')
-      .forEach(el => el.style.visibility = '');
+    document.getElementById('shareButtons').classList.remove('hidden');
+    document.getElementById('retryBtn').classList.remove('hidden');
+    document.getElementById('resultDisclaimer').classList.remove('hidden');
   }, 350);
 }
 
@@ -246,7 +248,10 @@ function spawnParticles(active) {
   }
 }
 
-function goHome() { showScreen('homeScreen'); }
+function goHome() {
+  document.getElementById('revealOverlay').classList.add('hidden');
+  showScreen('homeScreen');
+}
 
 function showScreen(id) {
   ['homeScreen','resultScreen'].forEach(s =>

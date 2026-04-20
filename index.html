@@ -81,13 +81,13 @@
       </div>
     </div>
 
-    <div class="share-buttons">
+    <div class="share-buttons hidden" id="shareButtons">
       <button class="btn-share btn-download" onclick="downloadCard()">⬇ Download Card</button>
       <button class="btn-share btn-twitter" onclick="shareTwitter()">𝕏 Share on Twitter</button>
       <button class="btn-share btn-copy" onclick="copyResult()">📋 Copy</button>
     </div>
-    <button class="btn-retry" onclick="goHome()">← Try Another Handle</button>
-    <p class="disclaimer">
+    <button class="btn-retry hidden" id="retryBtn" onclick="goHome()">← Try Another Handle</button>
+    <p class="disclaimer hidden" id="resultDisclaimer">
       Not affiliated with X / Twitter or <a href="https://x.com/r3tardsNFT" target="_blank" rel="noopener">@r3tards</a> · For entertainment only
     </p>
   </div>
