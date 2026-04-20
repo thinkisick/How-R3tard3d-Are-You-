@@ -2,7 +2,7 @@
 
 const FACE_IMG = 'face.png';
 
-// ── Spawn 6 floating faces ──
+// ── Floating faces ──
 const FACE_SLOTS = [
   { top: '6%',  left: '3%',  delay: '0s',   dur: '7.2s', w: 130 },
   { top: '4%',  right: '3%', delay: '1.4s', dur: '8.8s', w: 112 },
@@ -18,225 +18,238 @@ function spawnFaces() {
     const el = document.createElement('div');
     el.className = 'floating-face';
     const img = document.createElement('img');
-    img.src = FACE_IMG;
-    img.width = s.w;
-    img.draggable = false;
+    img.src = FACE_IMG; img.width = s.w; img.draggable = false;
     el.appendChild(img);
     Object.assign(el.style, {
-      top:               s.top    || 'auto',
-      left:              s.left   || 'auto',
-      right:             s.right  || 'auto',
-      bottom:            s.bottom || 'auto',
-      animationDelay:    s.delay,
-      animationDuration: s.dur,
+      top: s.top || 'auto', left: s.left || 'auto',
+      right: s.right || 'auto', bottom: s.bottom || 'auto',
+      animationDelay: s.delay, animationDuration: s.dur,
     });
     el.addEventListener('click', showPopup);
     c.appendChild(el);
   });
 }
 
-// ── Popup ──
 function showPopup() {
-  const pf = document.getElementById('popupFace');
-  pf.innerHTML = `<img src="donottouchitr3tard.png" style="width:100%;max-width:280px;border-radius:16px;">`;
+  document.getElementById('popupFace').innerHTML =
+    `<img src="donottouchitr3tard.png" style="width:100%;max-width:280px;border-radius:16px;">`;
   document.getElementById('popupOverlay').classList.add('active');
 }
-function closePopup() {
-  document.getElementById('popupOverlay').classList.remove('active');
-}
+function closePopup() { document.getElementById('popupOverlay').classList.remove('active'); }
 document.getElementById('popupOverlay').addEventListener('click', function(e) {
   if (e.target === this) closePopup();
 });
 
-// ── Deterministic hash from string → 0..1 float ──
+// ── Hash / seeded random ──
 function hashStr(str) {
   let h = 2166136261;
-  for (let i = 0; i < str.length; i++) {
-    h ^= str.charCodeAt(i);
-    h = (h * 16777619) >>> 0;
-  }
+  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = (h * 16777619) >>> 0; }
   return h / 4294967295;
 }
+function seededRand(seed, salt) { return hashStr(seed + salt); }
+function seededPick(seed, salt, arr) { return arr[Math.floor(seededRand(seed, salt) * arr.length)]; }
 
-function seededRand(seed, salt) {
-  return hashStr(seed + salt);
-}
+// ── Content pools ──
+const TITLES = ['Chaos Engine', 'Timeline Menace', 'Reply Goblin', 'Hot Take Machine', 'Thread Warrior', 'Ratio King', 'Degen Oracle'];
+const ABILITIES = ['⚡ Ratio Blast', '🔥 Opinion Drop', '🌀 Reply Storm', '💥 Quote Attack', '📡 Viral Misfire', '🎯 Clout Sniper'];
+const FLAVORS = [
+  '"this will age badly"',
+  '"internet never forgets"',
+  '"why would you post this"',
+  '"main character detected"',
+  '"touching grass not found"',
+  '"unhinged but consistent"',
+];
 
-// ── Score tiers ──
+// ── Rarity system ──
+const RARITIES = [
+  { id: 'legendary', min: 100, max: 100, label: '✦ LEGENDARY ✦' },
+  { id: 'mythic',    min: 90,  max: 99,  label: '✦ MYTHIC ✦'    },
+  { id: 'epic',      min: 70,  max: 89,  label: '✦ EPIC ✦'      },
+  { id: 'rare',      min: 40,  max: 69,  label: '✦ RARE ✦'      },
+  { id: 'common',    min: 0,   max: 39,  label: '✦ COMMON ✦'    },
+];
+
 const TIERS = [
-  { min: 0,  max: 19, tier: 'Barely R3tard3d',    desc: "Disappointingly functional. Seek more chaos." },
-  { min: 20, max: 39, tier: 'Mild R3tard3d',       desc: "A solid baseline. You make bad choices, but only sometimes." },
-  { min: 40, max: 59, tier: 'Average R3tard3d',    desc: "Right in the sweet spot. Chaos energy: moderate." },
-  { min: 60, max: 74, tier: 'Certified R3tard3d',  desc: "Now we're talking. Consistently unhinged. Respect." },
-  { min: 75, max: 89, tier: 'Elite R3tard3d',      desc: "Science cannot explain your decision-making. Icon." },
-  { min: 90, max: 100,tier: 'GOD-TIER R3tard3d',   desc: "You are the reason warning labels exist. A true legend." },
+  { min: 0,   max: 19,  tier: 'Barely R3tard3d',   desc: "Disappointingly functional. Seek more chaos." },
+  { min: 20,  max: 39,  tier: 'Mild R3tard3d',      desc: "A solid baseline. Bad choices, but only sometimes." },
+  { min: 40,  max: 59,  tier: 'Average R3tard3d',   desc: "Right in the sweet spot. Chaos energy: moderate." },
+  { min: 60,  max: 74,  tier: 'Certified R3tard3d', desc: "Consistently unhinged. Respect." },
+  { min: 75,  max: 89,  tier: 'Elite R3tard3d',     desc: "Science cannot explain your decision-making." },
+  { min: 90,  max: 99,  tier: 'GOD-TIER R3tard3d',  desc: "You are the reason warning labels exist." },
+  { min: 100, max: 100, tier: 'GOD-TIER R3tard3d',  desc: "Undeniable. Irreversible. A true legend." },
 ];
 
 const STATS = [
-  { key: 'degen',      label: 'Degen Level',         fmt: pct => pct + '%' },
-  { key: 'braincell',  label: 'Brain Cells Left',     fmt: pct => pct + ' / 100' },
-  { key: 'touchgrass', label: 'Touch Grass Urgency',  fmt: pct => pct + '%' },
-  { key: 'online',     label: 'Chronically Online',   fmt: pct => pct + '%' },
-  { key: 'posting',    label: 'Unhinged Posts/Day',   fmt: pct => (pct / 10).toFixed(1) },
-  { key: 'nft',        label: 'Rug Pull Survivor',    fmt: pct => pct + '%' },
+  { key: 'degen',      label: 'Degen Level',        fmt: p => p + '%' },
+  { key: 'braincell',  label: 'Brain Cells Left',   fmt: p => p + ' / 100' },
+  { key: 'touchgrass', label: 'Touch Grass',        fmt: p => p + '%' },
+  { key: 'online',     label: 'Chronically Online', fmt: p => p + '%' },
+  { key: 'posting',    label: 'Unhinged Posts/Day', fmt: p => (p / 10).toFixed(1) },
+  { key: 'nft',        label: 'Rug Pull Survivor',  fmt: p => p + '%' },
 ];
 
-let currentHandle = '';
-let currentScore  = 0;
-let currentTier   = null;
-let currentStats  = [];
+let currentHandle    = '';
+let currentScore     = 0;
+let currentTier      = null;
+let currentRarity    = null;
+let currentStats     = [];
+let currentAvatarUrl = '';
+let currentTitle     = '';
+let currentAbility   = '';
+let currentFlavor    = '';
 
+// ── Rate handle ──
 function rateHandle() {
   let handle = document.getElementById('handleInput').value.trim();
   if (!handle) { document.getElementById('handleInput').focus(); return; }
   handle = handle.replace(/^@+/, '');
-
   currentHandle = handle;
   const seed = handle.toLowerCase();
 
-  // Show scanning state
   const btn = document.getElementById('rateBtn');
   btn.disabled = true;
   btn.innerHTML = `Scanning... <img src="${FACE_IMG}" class="btn-face-icon" alt="">`;
   document.getElementById('scanningBlock').classList.remove('hidden');
 
+  currentAvatarUrl = `https://unavatar.io/twitter/${encodeURIComponent(handle)}`;
+
   setTimeout(() => {
-    // Compute scores
     const HALL_OF_FAME = ['thinkisick', 'dreiki10'];
-    if (HALL_OF_FAME.includes(seed)) {
-      currentScore = 100;
-    } else {
-      currentScore = Math.round(seededRand(seed, 'main') * 100);
-    }
-    currentTier  = TIERS.find(t => currentScore >= t.min && currentScore <= t.max) || TIERS[TIERS.length - 1];
-    currentStats = STATS.map(s => ({
-      label: s.label,
-      raw:   Math.round(seededRand(seed, s.key) * 100),
-      fmt:   s.fmt,
+    currentScore = HALL_OF_FAME.includes(seed) ? 100 : Math.round(seededRand(seed, 'main') * 100);
+
+    currentTier    = TIERS.find(t => currentScore >= t.min && currentScore <= t.max) || TIERS[TIERS.length - 1];
+    currentRarity  = RARITIES.find(r => currentScore >= r.min && currentScore <= r.max) || RARITIES[RARITIES.length - 1];
+    currentTitle   = seededPick(seed, 'title', TITLES);
+    currentAbility = seededPick(seed, 'ability', ABILITIES);
+    currentFlavor  = seededPick(seed, 'flavor', FLAVORS);
+    currentStats   = STATS.map(s => ({
+      label: s.label, raw: Math.round(seededRand(seed, s.key) * 100), fmt: s.fmt,
     }));
 
-    // Reset button for next use
     btn.disabled = false;
     btn.innerHTML = `Rate me <img src="${FACE_IMG}" class="btn-face-icon" alt="">`;
     document.getElementById('scanningBlock').classList.add('hidden');
 
     renderResult();
     showScreen('resultScreen');
-  }, 2200);
+  }, 5000);
 }
 
 function renderResult() {
+  const wrap = document.getElementById('cardDropWrap');
+
+  // Apply rarity class
+  wrap.className = `card-drop-wrap rarity-${currentRarity.id}`;
+
+  // Top row
   document.getElementById('resultHandle').textContent = '@' + currentHandle;
   document.getElementById('scoreBig').textContent     = currentScore + '%';
-  document.getElementById('scoreTier').textContent    = currentTier.tier;
-  document.getElementById('scoreDesc').textContent    = currentTier.desc;
 
   // Avatar
   const av = document.getElementById('resultAvatar');
-  av.innerHTML = `<img src="${FACE_IMG}" style="width:100%;height:100%;object-fit:contain;padding:4px;">`;
-  av.style.background = 'rgba(255,255,255,0.08)';
+  const img = document.createElement('img');
+  img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+  img.src = currentAvatarUrl;
+  img.onerror = () => { img.src = FACE_IMG; img.style.objectFit = 'contain'; img.style.padding = '4px'; };
+  av.innerHTML = ''; av.appendChild(img);
+
+  // Texts
+  document.getElementById('cardTitle').textContent   = currentTitle;
+  document.getElementById('scoreTier').textContent   = currentTier.tier;
+  document.getElementById('cardAbility').textContent = currentAbility;
+  document.getElementById('cardFlavor').textContent  = currentFlavor;
+  document.getElementById('cardRarityBar').textContent = currentRarity.label;
 
   // Stats
   const grid = document.getElementById('statsGrid');
   grid.innerHTML = '';
   currentStats.forEach(s => {
-    const item = document.createElement('div');
-    item.className = 'stat-item';
-    item.innerHTML = `
-      <div class="stat-label">${s.label}</div>
-      <div class="stat-value">${s.fmt(s.raw)}</div>
-      <div class="stat-bar-wrap"><div class="stat-bar" style="width:${s.raw}%"></div></div>
-    `;
-    grid.appendChild(item);
+    const d = document.createElement('div');
+    d.className = 'card-stat';
+    d.innerHTML = `
+      <div class="card-stat-label">${s.label}</div>
+      <div class="card-stat-value">${s.fmt(s.raw)}</div>
+      <div class="card-stat-bar-wrap"><div class="card-stat-bar" style="width:${s.raw}%"></div></div>`;
+    grid.appendChild(d);
   });
+
+  // Legendary particles
+  spawnParticles(currentRarity.id === 'legendary');
+
+  // Score pill rarity color
+  const pill = document.getElementById('scoreBig');
+  const pillColors = {
+    legendary: 'linear-gradient(135deg,#f59e0b,#a855f7)',
+    mythic:    'linear-gradient(135deg,#ec4899,#a855f7)',
+    epic:      'linear-gradient(135deg,#f97316,#ec4899)',
+    rare:      'linear-gradient(135deg,#6366f1,#8b5cf6)',
+    common:    'rgba(255,255,255,0.1)',
+  };
+  pill.style.background = pillColors[currentRarity.id] || pillColors.common;
 }
 
-function goHome() {
-  showScreen('homeScreen');
+function spawnParticles(active) {
+  const container = document.getElementById('cardParticles');
+  container.innerHTML = '';
+  if (!active) return;
+  const colors = ['#f59e0b','#fbbf24','#a855f7','#f472b6','#fff'];
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left    = Math.random() * 100 + '%';
+    p.style.bottom  = '0';
+    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+    p.style.width   = (3 + Math.random() * 4) + 'px';
+    p.style.height  = p.style.width;
+    p.style.animationDuration  = (3 + Math.random() * 4) + 's';
+    p.style.animationDelay     = (Math.random() * 3) + 's';
+    container.appendChild(p);
+  }
 }
+
+function goHome() { showScreen('homeScreen'); }
 
 function showScreen(id) {
-  ['homeScreen', 'resultScreen'].forEach(s =>
-    document.getElementById(s).classList.toggle('hidden', s !== id)
-  );
+  ['homeScreen','resultScreen'].forEach(s =>
+    document.getElementById(s).classList.toggle('hidden', s !== id));
 }
 
-// Allow Enter key + dim/brighten button based on input
-const handleInput = document.getElementById('handleInput');
-const rateBtn = document.getElementById('rateBtn');
-
-handleInput.addEventListener('input', () => {
-  rateBtn.classList.toggle('active', handleInput.value.trim().length > 0);
+// ── Input listeners ──
+const handleInputEl = document.getElementById('handleInput');
+const rateBtnEl     = document.getElementById('rateBtn');
+handleInputEl.addEventListener('input', () => {
+  rateBtnEl.classList.toggle('active', handleInputEl.value.trim().length > 0);
 });
-handleInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') rateHandle();
-});
+handleInputEl.addEventListener('keydown', e => { if (e.key === 'Enter') rateHandle(); });
 
-// ── Card download via html2canvas ──
+// ── Download card via html2canvas ──
 function downloadCard() {
   const btn = document.querySelector('.btn-download');
-  btn.textContent = '⏳ Generating...';
-  btn.disabled = true;
+  btn.textContent = '⏳ Generating...'; btn.disabled = true;
 
-  // Build off-screen snapshot card
-  let snap = document.getElementById('downloadSnapshot');
-  if (snap) snap.remove();
-
-  snap = document.createElement('div');
-  snap.id = 'downloadSnapshot';
-
-  const statsHTML = currentStats.map(s => `
-    <div class="snap-stat">
-      <div class="snap-stat-label">${s.label}</div>
-      <div class="snap-stat-val">${s.fmt(s.raw)}</div>
-      <div class="snap-stat-bar-wrap">
-        <div class="snap-stat-bar" style="width:${s.raw}%"></div>
-      </div>
-    </div>
-  `).join('');
-
-  snap.innerHTML = `
-    <div class="snap-avatar"><img src="${FACE_IMG}" style="width:68px;object-fit:contain;padding:4px;"></div>
-    <div class="snap-handle">@${currentHandle}</div>
-    <div class="snap-label">R3tard3d Score</div>
-    <div class="snap-score">${currentScore}%</div>
-    <div class="snap-tier">${currentTier.tier}</div>
-    <div class="snap-desc">${currentTier.desc}</div>
-    <div class="snap-stats">${statsHTML}</div>
-    <div class="snap-footer">how-r3tard3d-are-you · Made by sick @thinkisick</div>
-  `;
-  document.body.appendChild(snap);
-
-  html2canvas(snap, {
-    scale: 2,
-    backgroundColor: null,
-    useCORS: true,
-    logging: false,
-  }).then(canvas => {
-    const a = document.createElement('a');
-    a.download = 'r3tard3d-score.png';
-    a.href = canvas.toDataURL('image/png');
-    a.click();
-    snap.remove();
-    btn.textContent = '⬇ Download Card';
-    btn.disabled = false;
-  }).catch(() => {
-    snap.remove();
-    btn.textContent = '⬇ Download Card';
-    btn.disabled = false;
-  });
+  const source = document.getElementById('resultCard');
+  html2canvas(source, { scale: 2, backgroundColor: null, useCORS: true, logging: false })
+    .then(canvas => {
+      const a = document.createElement('a');
+      a.download = 'r3tard3d-card.png';
+      a.href = canvas.toDataURL('image/png');
+      a.click();
+      btn.textContent = '⬇ Download Card'; btn.disabled = false;
+    })
+    .catch(() => { btn.textContent = '⬇ Download Card'; btn.disabled = false; });
 }
 
 // ── Share / Copy ──
 function shareTwitter() {
   const text = encodeURIComponent(
-    `I scored ${currentScore}% — ${currentTier.tier} 🧠\n\nHow R3tard3d are you? Find out:`
+    `I got ${currentScore}% — ${currentTitle} (${currentTier.tier}) ${currentFlavor}\n\nHow R3tard3d are you?`
   );
   window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
 }
 
 function copyResult() {
-  const text = `@${currentHandle} R3tard3d Score: ${currentScore}% — ${currentTier.tier}\n${currentTier.desc}`;
+  const text = `@${currentHandle} — ${currentScore}% ${currentRarity.label}\n${currentTitle} · ${currentAbility}\n${currentFlavor}`;
   if (navigator.clipboard) {
     navigator.clipboard.writeText(text).then(() => {
       const btn = document.querySelector('.btn-copy');

@@ -8,7 +8,6 @@
 </head>
 <body>
 
-  <!-- Floating Faces -->
   <div class="faces-container" id="facesContainer"></div>
 
   <!-- Touch Popup -->
@@ -27,28 +26,18 @@
       <h1 class="title">How R3tard3d<br/>Are You?</h1>
       <p class="subtitle">Enter your Twitter handle to find out</p>
       <div class="input-row">
-        <input
-          type="text"
-          id="handleInput"
-          class="handle-input"
-          placeholder="@yourhandle"
-          autocomplete="off"
-          spellcheck="false"
-          maxlength="50"
-        />
+        <input type="text" id="handleInput" class="handle-input"
+          placeholder="@yourhandle" autocomplete="off" spellcheck="false" maxlength="50"/>
         <button class="btn-rate" id="rateBtn" onclick="rateHandle()">
           Rate me <img src="face.png" class="btn-face-icon" alt="">
         </button>
       </div>
       <p class="input-hint">No login required · 100% vibes-based</p>
-
-      <!-- Scanning state -->
       <div class="scanning-block hidden" id="scanningBlock">
-        <img src="face.png" class="scanning-face" id="scanningFace" alt="">
+        <img src="face.png" class="scanning-face" alt="">
         <p class="scanning-text">Scanning your r3tard3d energy...</p>
         <div class="scanning-dots"><span></span><span></span><span></span></div>
       </div>
-
       <p class="disclaimer home-disclaimer">
         Not affiliated with X / Twitter or <a href="https://x.com/r3tardsNFT" target="_blank" rel="noopener">@r3tards</a> · For entertainment only
       </p>
@@ -57,20 +46,31 @@
 
   <!-- RESULT SCREEN -->
   <div class="screen hidden" id="resultScreen">
-    <div class="result-card" id="resultCard">
-      <div class="result-header">
-        <div class="result-avatar" id="resultAvatar"></div>
-        <div class="result-handle-name" id="resultHandle"></div>
-      </div>
 
-      <div class="score-block">
-        <p class="score-label-top">R3tard3d Score</p>
-        <div class="score-big" id="scoreBig"></div>
-        <p class="score-tier" id="scoreTier"></p>
-        <p class="score-desc" id="scoreDesc"></p>
-      </div>
+    <!-- Loot drop card -->
+    <div class="card-drop-wrap" id="cardDropWrap">
+      <div class="card-border-spin" id="cardBorderSpin"></div>
+      <div class="loot-card" id="resultCard">
+        <div class="card-particles" id="cardParticles"></div>
 
-      <div class="stats-grid" id="statsGrid"></div>
+        <div class="card-top-row">
+          <span class="card-handle" id="resultHandle"></span>
+          <span class="card-score-pill" id="scoreBig"></span>
+        </div>
+
+        <div class="card-avatar-wrap">
+          <div class="card-avatar" id="resultAvatar"></div>
+        </div>
+
+        <div class="card-title" id="cardTitle"></div>
+        <div class="card-tier-badge" id="scoreTier"></div>
+        <div class="card-ability" id="cardAbility"></div>
+
+        <div class="card-stats-grid" id="statsGrid"></div>
+
+        <div class="card-flavor" id="cardFlavor"></div>
+        <div class="card-rarity-bar" id="cardRarityBar"></div>
+      </div>
     </div>
 
     <div class="share-buttons">
@@ -84,7 +84,6 @@
     </p>
   </div>
 
-  <!-- Footer -->
   <footer class="footer">
     <span>Made by <a href="https://x.com/thinkisick" target="_blank" rel="noopener">sick</a></span>
     <span class="footer-sep">·</span>
