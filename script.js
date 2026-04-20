@@ -144,7 +144,7 @@ const TIERS = [
 
 const STATS = [
   { key: 'degen',      label: 'Degen Level',         fmt: pct => pct + '%' },
-  { key: 'braincell',  label: 'Brain Cells Left',     fmt: pct => Math.round(pct * 12) + ' / 100' },
+  { key: 'braincell',  label: 'Brain Cells Left',     fmt: pct => pct + ' / 100' },
   { key: 'touchgrass', label: 'Touch Grass Urgency',  fmt: pct => pct + '%' },
   { key: 'online',     label: 'Chronically Online',   fmt: pct => pct + '%' },
   { key: 'posting',    label: 'Unhinged Posts/Day',   fmt: pct => (pct / 10).toFixed(1) },
@@ -220,91 +220,59 @@ document.getElementById('handleInput').addEventListener('keydown', e => {
   if (e.key === 'Enter') rateHandle();
 });
 
-// ── Card download ──
+// ── Card download via html2canvas ──
 function downloadCard() {
-  const canvas = document.createElement('canvas');
-  canvas.width  = 800;
-  canvas.height = 460;
-  const ctx = canvas.getContext('2d');
+  const btn = document.querySelector('.btn-download');
+  btn.textContent = '⏳ Generating...';
+  btn.disabled = true;
 
-  const grad = ctx.createRadialGradient(240, 180, 0, 400, 230, 530);
-  grad.addColorStop(0, '#9B6DD0');
-  grad.addColorStop(0.5, '#6B3FA0');
-  grad.addColorStop(1, '#3D1A70');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, 800, 460);
+  // Build off-screen snapshot card
+  let snap = document.getElementById('downloadSnapshot');
+  if (snap) snap.remove();
 
-  // Card panel
-  ctx.fillStyle = 'rgba(255,255,255,0.09)';
-  roundRect(ctx, 60, 36, 680, 388, 28); ctx.fill();
-  ctx.strokeStyle = 'rgba(255,255,255,0.18)';
-  ctx.lineWidth = 1.5;
-  roundRect(ctx, 60, 36, 680, 388, 28); ctx.stroke();
+  snap = document.createElement('div');
+  snap.id = 'downloadSnapshot';
 
-  // Handle
-  ctx.fillStyle = 'rgba(212,176,255,0.9)';
-  ctx.font = 'bold 20px sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('@' + currentHandle, 400, 90);
+  const statsHTML = currentStats.map(s => `
+    <div class="snap-stat">
+      <div class="snap-stat-label">${s.label}</div>
+      <div class="snap-stat-val">${s.fmt(s.raw)}</div>
+      <div class="snap-stat-bar-wrap">
+        <div class="snap-stat-bar" style="width:${s.raw}%"></div>
+      </div>
+    </div>
+  `).join('');
 
-  // Label
-  ctx.fillStyle = 'rgba(212,176,255,0.7)';
-  ctx.font = 'bold 15px sans-serif';
-  ctx.fillText('R3TARD3D SCORE', 400, 118);
+  snap.innerHTML = `
+    <div class="snap-avatar">${makeFaceSVG(68, 40)}</div>
+    <div class="snap-handle">@${currentHandle}</div>
+    <div class="snap-label">R3tard3d Score</div>
+    <div class="snap-score">${currentScore}%</div>
+    <div class="snap-tier">${currentTier.tier}</div>
+    <div class="snap-desc">${currentTier.desc}</div>
+    <div class="snap-stats">${statsHTML}</div>
+    <div class="snap-footer">how-r3tard3d-are-you · Made by sick @thinkisick</div>
+  `;
+  document.body.appendChild(snap);
 
-  // Big score
-  ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 120px sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText(currentScore + '%', 400, 252);
-
-  // Tier
-  ctx.fillStyle = '#E8D5FF';
-  ctx.font = 'bold 28px sans-serif';
-  ctx.fillText(currentTier.tier, 400, 294);
-
-  // Desc
-  ctx.fillStyle = 'rgba(212,176,255,0.75)';
-  ctx.font = '15px sans-serif';
-  wrapText(ctx, currentTier.desc, 400, 328, 560, 22);
-
-  // Watermark
-  ctx.fillStyle = 'rgba(255,255,255,0.3)';
-  ctx.font = '13px sans-serif';
-  ctx.fillText('how-r3tard3d-are-you · Made by sick @thinkisick', 400, 402);
-
-  const a = document.createElement('a');
-  a.download = 'r3tard3d-score.png';
-  a.href = canvas.toDataURL('image/png');
-  a.click();
-}
-
-function roundRect(ctx, x, y, w, h, r) {
-  ctx.beginPath();
-  ctx.moveTo(x+r, y);
-  ctx.lineTo(x+w-r, y);
-  ctx.quadraticCurveTo(x+w, y, x+w, y+r);
-  ctx.lineTo(x+w, y+h-r);
-  ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
-  ctx.lineTo(x+r, y+h);
-  ctx.quadraticCurveTo(x, y+h, x, y+h-r);
-  ctx.lineTo(x, y+r);
-  ctx.quadraticCurveTo(x, y, x+r, y);
-  ctx.closePath();
-}
-
-function wrapText(ctx, text, x, y, maxW, lineH) {
-  const words = text.split(' ');
-  let line = '';
-  for (let i = 0; i < words.length; i++) {
-    const test = line + words[i] + ' ';
-    if (ctx.measureText(test).width > maxW && i > 0) {
-      ctx.fillText(line.trim(), x, y);
-      line = words[i] + ' ';
-      y += lineH;
-    } else { line = test; }
-  }
-  ctx.fillText(line.trim(), x, y);
+  html2canvas(snap, {
+    scale: 2,
+    backgroundColor: null,
+    useCORS: true,
+    logging: false,
+  }).then(canvas => {
+    const a = document.createElement('a');
+    a.download = 'r3tard3d-score.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+    snap.remove();
+    btn.textContent = '⬇ Download Card';
+    btn.disabled = false;
+  }).catch(() => {
+    snap.remove();
+    btn.textContent = '⬇ Download Card';
+    btn.disabled = false;
+  });
 }
 
 // ── Share / Copy ──

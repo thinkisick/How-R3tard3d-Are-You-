@@ -359,6 +359,72 @@ body {
 .footer a:hover { color: #fff; text-decoration: underline; }
 .footer-sep { opacity: 0.35; }
 
+/* ── Download snapshot card (off-screen) ── */
+#downloadSnapshot {
+  position: fixed;
+  top: -9999px;
+  left: -9999px;
+  width: 480px;
+  padding: 40px 36px 36px;
+  background: radial-gradient(ellipse at 30% 20%, #9B6DD0 0%, #6B3FA0 45%, #3D1A70 100%);
+  border-radius: 32px;
+  font-family: 'Space Grotesk', sans-serif;
+  color: #fff;
+  text-align: center;
+}
+#downloadSnapshot .snap-avatar {
+  width: 88px; height: 88px;
+  border-radius: 50%;
+  border: 2.5px solid rgba(255,255,255,0.35);
+  background: rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 12px;
+  overflow: hidden;
+}
+#downloadSnapshot .snap-handle {
+  font-size: 1.1rem; font-weight: 700; color: #D4B0FF; margin-bottom: 20px;
+}
+#downloadSnapshot .snap-label {
+  font-size: 0.75rem; font-weight: 700; color: #D4B0FF;
+  text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px;
+}
+#downloadSnapshot .snap-score {
+  font-size: 7rem; font-weight: 900; line-height: 1;
+  color: #fff; margin-bottom: 8px;
+}
+#downloadSnapshot .snap-tier {
+  font-size: 1.5rem; font-weight: 800; margin-bottom: 8px;
+}
+#downloadSnapshot .snap-desc {
+  font-size: 0.9rem; color: #D4B0FF; line-height: 1.55;
+  max-width: 340px; margin: 0 auto 24px;
+}
+#downloadSnapshot .snap-stats {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;
+}
+#downloadSnapshot .snap-stat {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 14px; padding: 12px 14px; text-align: left;
+}
+#downloadSnapshot .snap-stat-label {
+  font-size: 0.68rem; font-weight: 700; color: rgba(255,255,255,0.5);
+  text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;
+}
+#downloadSnapshot .snap-stat-val {
+  font-size: 1rem; font-weight: 800;
+}
+#downloadSnapshot .snap-stat-bar-wrap {
+  height: 4px; background: rgba(255,255,255,0.1); border-radius: 99px; margin-top: 6px;
+}
+#downloadSnapshot .snap-stat-bar {
+  height: 100%; border-radius: 99px;
+  background: linear-gradient(90deg, #D4B0FF, #fff);
+}
+#downloadSnapshot .snap-footer {
+  font-size: 0.72rem; color: rgba(255,255,255,0.35); margin-top: 4px;
+}
+
 @media (max-width: 480px) {
   .result-card { padding: 24px 16px; }
   .score-big { font-size: 4.5rem; }
