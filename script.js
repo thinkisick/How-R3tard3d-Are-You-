@@ -161,8 +161,14 @@ function showScreen(id) {
   );
 }
 
-// Allow Enter key
-document.getElementById('handleInput').addEventListener('keydown', e => {
+// Allow Enter key + dim/brighten button based on input
+const handleInput = document.getElementById('handleInput');
+const rateBtn = document.getElementById('rateBtn');
+
+handleInput.addEventListener('input', () => {
+  rateBtn.classList.toggle('active', handleInput.value.trim().length > 0);
+});
+handleInput.addEventListener('keydown', e => {
   if (e.key === 'Enter') rateHandle();
 });
 

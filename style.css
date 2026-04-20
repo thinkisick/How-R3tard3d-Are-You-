@@ -108,29 +108,27 @@ body {
 .hero { text-align: center; width: 100%; }
 
 .hero-avatar {
-  width: 120px;
-  height: 120px;
+  width: 110px;
+  height: 110px;
   border-radius: 50%;
   object-fit: cover;
-  margin-bottom: 20px;
+  margin: 0 auto 18px;
   display: block;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .title {
-  font-size: clamp(2.6rem, 9vw, 4.2rem);
+  font-size: clamp(2rem, 7vw, 3rem);
   font-weight: 900;
-  line-height: 1.1;
+  line-height: 1.15;
   text-shadow: 0 4px 24px rgba(0,0,0,0.3);
-  margin-bottom: 14px;
-  letter-spacing: -1px;
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
 }
 
 .subtitle {
-  font-size: 1.05rem;
+  font-size: 1rem;
   color: #D4B0FF;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
 }
 
 .input-row {
@@ -167,14 +165,17 @@ body {
   font-size: 1rem;
   font-weight: 800;
   border-radius: 16px;
+  opacity: 0.45;
+  transition: transform 0.15s, box-shadow 0.15s, opacity 0.25s !important;
   cursor: pointer;
   font-family: inherit;
   white-space: nowrap;
   box-shadow: 0 6px 24px rgba(0,0,0,0.2);
   transition: transform 0.15s, box-shadow 0.15s;
 }
-.btn-rate:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(0,0,0,0.3); }
-.btn-rate:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.btn-rate.active { opacity: 1; }
+.btn-rate.active:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(0,0,0,0.3); }
+.btn-rate:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
 
 .btn-face-icon {
   width: 28px;
