@@ -101,22 +101,30 @@ let currentFlavor    = '';
 
 // Load avatar via wsrv.nl proxy (has CORS headers) → canvas → base64
 function fetchAvatarBase64(handle) {
-  // wsrv.nl proxies unavatar.io and adds CORS headers
-  const proxied = `https://wsrv.nl/?url=unavatar.io/twitter/${encodeURIComponent(handle)}&w=200&h=200&fit=cover&output=jpg`;
-  return new Promise(resolve => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => {
-      try {
-        const c = document.createElement('canvas');
-        c.width = c.height = 200;
-        c.getContext('2d').drawImage(img, 0, 0, 200, 200);
-        resolve(c.toDataURL('image/jpeg', 0.92));
-      } catch { resolve(null); }
-    };
-    img.onerror = () => resolve(null);
-    img.src = proxied;
-  });
+  const encoded = encodeURIComponent(handle);
+  const candidates = [
+    `https://wsrv.nl/?url=unavatar.io%2Fx%2F${encoded}&w=200&h=200&fit=cover&output=jpg`,
+    `https://wsrv.nl/?url=unavatar.io%2Ftwitter%2F${encoded}&w=200&h=200&fit=cover&output=jpg`,
+    `https://wsrv.nl/?url=unavatar.io%2Fx%2F${encoded}&w=200&h=200&output=png`,
+  ];
+  function tryNext(i) {
+    if (i >= candidates.length) return Promise.resolve(null);
+    return new Promise(resolve => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        try {
+          const c = document.createElement('canvas');
+          c.width = c.height = 200;
+          c.getContext('2d').drawImage(img, 0, 0, 200, 200);
+          resolve(c.toDataURL('image/jpeg', 0.92));
+        } catch { resolve(tryNext(i + 1)); }
+      };
+      img.onerror = () => resolve(tryNext(i + 1));
+      img.src = candidates[i];
+    });
+  }
+  return tryNext(0);
 }
 
 // ── Rate handle ──
@@ -189,12 +197,16 @@ function renderResult() {
   document.getElementById('resultHandle').textContent = '@' + currentHandle;
   document.getElementById('scoreBig').textContent     = currentScore + '%';
 
-  // Avatar — use base64 so html2canvas can capture it
+  // Avatar — base64 for html2canvas; fallback to direct URL for display
   const av = document.getElementById('resultAvatar');
   const img = document.createElement('img');
   img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
-  img.src = currentAvatarB64 || FACE_IMG;
-  if (!currentAvatarB64) { img.style.objectFit = 'contain'; img.style.padding = '4px'; }
+  if (currentAvatarB64) {
+    img.src = currentAvatarB64;
+  } else {
+    img.src = `https://unavatar.io/x/${encodeURIComponent(currentHandle)}`;
+    img.onerror = () => { img.src = FACE_IMG; img.style.objectFit = 'contain'; img.style.padding = '4px'; };
+  }
   av.innerHTML = ''; av.appendChild(img);
 
   // Texts
