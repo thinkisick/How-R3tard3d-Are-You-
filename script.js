@@ -99,18 +99,24 @@ let currentTitle     = '';
 let currentAbility   = '';
 let currentFlavor    = '';
 
-// Fetch avatar and convert to base64 (avoids CORS issues in html2canvas)
-async function fetchAvatarBase64(url) {
-  try {
-    const resp = await fetch(url);
-    if (!resp.ok) return null;
-    const blob = await resp.blob();
-    return new Promise(res => {
-      const r = new FileReader();
-      r.onloadend = () => res(r.result);
-      r.readAsDataURL(blob);
-    });
-  } catch { return null; }
+// Load avatar via wsrv.nl proxy (has CORS headers) → canvas → base64
+function fetchAvatarBase64(handle) {
+  // wsrv.nl proxies unavatar.io and adds CORS headers
+  const proxied = `https://wsrv.nl/?url=unavatar.io/twitter/${encodeURIComponent(handle)}&w=200&h=200&fit=cover&output=jpg`;
+  return new Promise(resolve => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      try {
+        const c = document.createElement('canvas');
+        c.width = c.height = 200;
+        c.getContext('2d').drawImage(img, 0, 0, 200, 200);
+        resolve(c.toDataURL('image/jpeg', 0.92));
+      } catch { resolve(null); }
+    };
+    img.onerror = () => resolve(null);
+    img.src = proxied;
+  });
 }
 
 // ── Rate handle ──
@@ -126,12 +132,9 @@ async function rateHandle() {
   btn.innerHTML = `Scanning... <img src="${FACE_IMG}" class="btn-face-icon" alt="">`;
   document.getElementById('scanningBlock').classList.remove('hidden');
 
-  const avatarUrl = `https://unavatar.io/twitter/${encodeURIComponent(handle)}`;
-  currentAvatarUrl = avatarUrl;
-
   // Run 5s delay and avatar fetch in parallel
   const [avatarB64] = await Promise.all([
-    fetchAvatarBase64(avatarUrl),
+    fetchAvatarBase64(handle),
     new Promise(res => setTimeout(res, 5000)),
   ]);
   currentAvatarB64 = avatarB64;
