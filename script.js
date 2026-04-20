@@ -309,7 +309,7 @@ async function downloadCard() {
   patch(card,    'webkitBackdropFilter', 'none');
   patch(card,    'background',           'rgb(15,8,30)');
   patch(spinEl,  'animation',            'none');
-  patch(spinEl,  'transform',            'rotate(0deg)');
+  patch(spinEl,  'transform',            'none');
   patch(titleEl, 'webkitTextFillColor',  '#fff');
   patch(titleEl, 'backgroundImage',      'none');
 
