@@ -1,85 +1,15 @@
 'use strict';
 
-// ── SVG Face — pepe smoking sticker (wide flat blob, heavy lids, cig) ──
-function makeFaceSVG(w, h) {
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 170" width="${w}" height="${h}">
-  <!-- Body: wide flat organic blob -->
-  <path d="M 38,85 C 33,58 42,30 75,22 C 98,16 135,12 168,15
-           C 200,18 240,28 260,44 C 278,57 278,75 268,92
-           C 258,110 240,125 210,132 C 182,139 148,141 115,138
-           C 84,135 55,124 40,108 C 30,96 40,95 38,85 Z"
-    fill="#7A3B1E" stroke="#111" stroke-width="6.5" stroke-linejoin="round"/>
-
-  <!-- Lower face wrinkle -->
-  <path d="M 58,118 Q 95,110 140,114 Q 178,118 210,110 Q 232,106 248,114"
-    fill="none" stroke="#5A2810" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
-
-  <!-- LEFT EYE white (full ellipse) -->
-  <ellipse cx="110" cy="72" rx="33" ry="27" fill="white" stroke="#111" stroke-width="5"/>
-  <!-- LEFT pupil (low, stoned look) -->
-  <ellipse cx="116" cy="82" rx="15" ry="17" fill="#111"/>
-  <!-- LEFT eyelid cover: filled brown shape covering top 58% of eye -->
-  <!-- Eyelid bottom boundary = y≈74 (a Q-curve sagging down = heavy drooping lid) -->
-  <path d="M 77,74 Q 110,82 143,74 L 143,44 L 77,44 Z" fill="#7A3B1E"/>
-  <!-- LEFT eyelid bottom edge (visible curved line) -->
-  <path d="M 77,74 Q 110,82 143,74" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"/>
-  <!-- LEFT glare dot (below lid line, visible) -->
-  <circle cx="122" cy="78" r="4.5" fill="white"/>
-  <!-- LEFT inner-corner fold -->
-  <path d="M 78,77 Q 73,83 75,90" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>
-
-  <!-- RIGHT EYE white -->
-  <ellipse cx="198" cy="70" rx="33" ry="27" fill="white" stroke="#111" stroke-width="5"/>
-  <!-- RIGHT pupil -->
-  <ellipse cx="204" cy="80" rx="15" ry="17" fill="#111"/>
-  <!-- RIGHT eyelid cover -->
-  <path d="M 165,72 Q 198,80 231,72 L 231,42 L 165,42 Z" fill="#7A3B1E"/>
-  <!-- RIGHT eyelid bottom edge -->
-  <path d="M 165,72 Q 198,80 231,72" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"/>
-  <!-- RIGHT glare dot -->
-  <circle cx="210" cy="76" r="4.5" fill="white"/>
-  <!-- RIGHT outer-corner fold -->
-  <path d="M 230,75 Q 237,81 235,88" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>
-
-  <!-- LEFT EYEBROW — thick, inner end dips down (furrowed/concerned look) -->
-  <path d="M 76,50 Q 110,38 144,48" fill="none" stroke="#111" stroke-width="8" stroke-linecap="round"/>
-  <!-- RIGHT EYEBROW -->
-  <path d="M 163,46 Q 197,36 232,46" fill="none" stroke="#111" stroke-width="8" stroke-linecap="round"/>
-  <!-- Brow inner furrow dip (between brows, making them look heavy/mean) -->
-  <path d="M 142,49 L 149,56" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"/>
-  <path d="M 163,46 L 157,53" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"/>
-
-  <!-- CIGARETTE sticking out lower-left (~14° downward) -->
-  <rect x="3" y="97" width="72" height="12" rx="6"
-    fill="#EAE0C0" stroke="#111" stroke-width="2.5"
-    transform="rotate(-14 39 103)"/>
-  <!-- Filter section -->
-  <rect x="55" y="95" width="20" height="12" rx="5.5"
-    fill="#D0C090" stroke="#111" stroke-width="2"
-    transform="rotate(-14 65 101)"/>
-  <!-- Ash band -->
-  <rect x="24" y="98" width="11" height="8" rx="2"
-    fill="#999" opacity="0.5" transform="rotate(-14 29 102)"/>
-  <!-- Ember (red glow) -->
-  <circle cx="6" cy="101" r="7" fill="#C03010" transform="rotate(-14 6 101)"/>
-  <circle cx="6" cy="101" r="4" fill="#FF6030" transform="rotate(-14 6 101)" opacity="0.9"/>
-
-  <!-- SMOKE wisps from ember -->
-  <path d="M 1,91 C -5,77 -1,63 -7,49 C -11,37 -5,24 -9,11"
-    fill="none" stroke="rgba(195,195,195,0.75)" stroke-width="3.5" stroke-linecap="round"/>
-  <path d="M 12,89 C 18,75 14,61 20,48 C 24,36 18,23 23,10"
-    fill="none" stroke="rgba(195,195,195,0.5)" stroke-width="2.5" stroke-linecap="round"/>
-</svg>`;
-}
+const FACE_IMG = 'face.png';
 
 // ── Spawn 6 floating faces ──
 const FACE_SLOTS = [
-  { top: '6%',  left: '3%',  delay: '0s',    dur: '7.2s', w: 130, h: 75 },
-  { top: '4%',  right: '3%', delay: '1.4s',  dur: '8.8s', w: 112, h: 65 },
-  { top: '38%', left: '1%',  delay: '0.6s',  dur: '6.6s', w: 124, h: 72 },
-  { top: '58%', right: '2%', delay: '2.1s',  dur: '9.2s', w: 118, h: 68 },
-  { top: '76%', left: '4%',  delay: '1.9s',  dur: '7.8s', w: 108, h: 63 },
-  { top: '80%', right: '5%', delay: '0.8s',  dur: '8.2s', w: 126, h: 73 },
+  { top: '6%',  left: '3%',  delay: '0s',   dur: '7.2s', w: 130 },
+  { top: '4%',  right: '3%', delay: '1.4s', dur: '8.8s', w: 112 },
+  { top: '38%', left: '1%',  delay: '0.6s', dur: '6.6s', w: 124 },
+  { top: '58%', right: '2%', delay: '2.1s', dur: '9.2s', w: 118 },
+  { top: '76%', left: '4%',  delay: '1.9s', dur: '7.8s', w: 108 },
+  { top: '80%', right: '5%', delay: '0.8s', dur: '8.2s', w: 126 },
 ];
 
 function spawnFaces() {
@@ -87,7 +17,11 @@ function spawnFaces() {
   FACE_SLOTS.forEach(s => {
     const el = document.createElement('div');
     el.className = 'floating-face';
-    el.innerHTML = makeFaceSVG(s.w, s.h);
+    const img = document.createElement('img');
+    img.src = FACE_IMG;
+    img.width = s.w;
+    img.draggable = false;
+    el.appendChild(img);
     Object.assign(el.style, {
       top:               s.top    || 'auto',
       left:              s.left   || 'auto',
@@ -103,7 +37,8 @@ function spawnFaces() {
 
 // ── Popup ──
 function showPopup() {
-  document.getElementById('popupFace').innerHTML = makeFaceSVG(100, 58);
+  const pf = document.getElementById('popupFace');
+  pf.innerHTML = `<img src="${FACE_IMG}" width="120">`;
   document.getElementById('popupOverlay').classList.add('active');
 }
 function closePopup() {
@@ -180,9 +115,9 @@ function renderResult() {
   document.getElementById('scoreTier').textContent    = currentTier.tier;
   document.getElementById('scoreDesc').textContent    = currentTier.desc;
 
-  // Avatar placeholder
+  // Avatar
   const av = document.getElementById('resultAvatar');
-  av.innerHTML = makeFaceSVG(52, 30);
+  av.innerHTML = `<img src="${FACE_IMG}" style="width:100%;height:100%;object-fit:contain;padding:4px;">`;
   av.style.background = 'rgba(255,255,255,0.08)';
 
   // Stats
@@ -239,7 +174,7 @@ function downloadCard() {
   `).join('');
 
   snap.innerHTML = `
-    <div class="snap-avatar">${makeFaceSVG(68, 40)}</div>
+    <div class="snap-avatar"><img src="${FACE_IMG}" style="width:68px;object-fit:contain;padding:4px;"></div>
     <div class="snap-handle">@${currentHandle}</div>
     <div class="snap-label">R3tard3d Score</div>
     <div class="snap-score">${currentScore}%</div>
