@@ -1,96 +1,114 @@
 'use strict';
 
-// ── SVG Face (pepe-style smoking character) ──
-const FACE_SVG = `
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 130" width="110" height="72">
-  <!-- Body blob -->
-  <path d="M20,65 C15,40 30,20 60,18 C80,16 110,14 140,18 C165,22 185,38 182,60 C180,80 170,100 145,108 C120,116 75,118 50,110 C28,103 22,85 20,65 Z"
-        fill="#8B5E3C" stroke="#1a0a00" stroke-width="4"/>
-  <!-- Left eye white -->
-  <ellipse cx="72" cy="52" rx="22" ry="18" fill="#fff" stroke="#1a0a00" stroke-width="3"/>
-  <!-- Right eye white -->
-  <ellipse cx="128" cy="52" rx="22" ry="18" fill="#fff" stroke="#1a0a00" stroke-width="3"/>
-  <!-- Left pupil -->
-  <ellipse cx="76" cy="56" rx="10" ry="12" fill="#1a0a00"/>
+// ── SVG Face — accurate pepe-smoking sticker ──
+// Wide flat brown blob, heavy-lidded stoned eyes, cigarette bottom-left, smoke wisps
+function makeFaceSVG(w, h) {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 160" width="${w}" height="${h}">
+  <!-- Body: wide flat blob with wavy bumpy edges -->
+  <path d="
+    M 38,80
+    C 32,55 36,32 62,24
+    C 82,18 108,14 145,16
+    C 175,18 210,24 230,38
+    C 248,50 250,68 244,86
+    C 238,104 224,118 200,124
+    C 178,130 148,134 118,132
+    C 90,130 62,126 48,114
+    C 34,103 40,98 38,80 Z"
+    fill="#7A3B1E" stroke="#111" stroke-width="5.5" stroke-linejoin="round"/>
+
+  <!-- Skin wrinkle / fold lines -->
+  <path d="M 60,110 Q 90,104 120,108 Q 155,112 185,106 Q 210,102 225,112"
+    fill="none" stroke="#5C2A10" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+
+  <!-- LEFT EYE white -->
+  <ellipse cx="100" cy="66" rx="32" ry="26" fill="white" stroke="#111" stroke-width="4.5"/>
+  <!-- RIGHT EYE white -->
+  <ellipse cx="178" cy="64" rx="32" ry="26" fill="white" stroke="#111" stroke-width="4.5"/>
+
+  <!-- Left pupil (slightly right-center, stoned look) -->
+  <ellipse cx="106" cy="72" rx="15" ry="17" fill="#111"/>
   <!-- Right pupil -->
-  <ellipse cx="132" cy="56" rx="10" ry="12" fill="#1a0a00"/>
-  <!-- Left eye glare -->
-  <circle cx="80" cy="50" r="3" fill="#fff"/>
-  <!-- Right eye glare -->
-  <circle cx="136" cy="50" r="3" fill="#fff"/>
-  <!-- Left eyelid (heavy) -->
-  <path d="M50,44 Q72,34 94,44" fill="#8B5E3C" stroke="#1a0a00" stroke-width="3" stroke-linecap="round"/>
-  <!-- Right eyelid (heavy) -->
-  <path d="M106,44 Q128,34 150,44" fill="#8B5E3C" stroke="#1a0a00" stroke-width="3" stroke-linecap="round"/>
-  <!-- Left brow -->
-  <path d="M50,36 Q72,26 94,34" fill="none" stroke="#1a0a00" stroke-width="4" stroke-linecap="round"/>
-  <!-- Right brow -->
-  <path d="M106,34 Q128,26 150,36" fill="none" stroke="#1a0a00" stroke-width="4" stroke-linecap="round"/>
-  <!-- Cigarette -->
-  <rect x="18" y="72" width="48" height="7" rx="3.5" fill="#f5f0e0" stroke="#1a0a00" stroke-width="2"/>
-  <rect x="18" y="72" width="10" height="7" rx="3.5" fill="#c0392b"/>
+  <ellipse cx="183" cy="70" rx="15" ry="17" fill="#111"/>
+
+  <!-- Eye glare left -->
+  <circle cx="112" cy="64" r="4.5" fill="white"/>
+  <!-- Eye glare right -->
+  <circle cx="189" cy="62" r="4.5" fill="white"/>
+
+  <!-- LEFT heavy eyelid (covers ~55% of eye from top) -->
+  <path d="M 68,58 Q 100,42 132,58 L 132,66 Q 100,55 68,66 Z"
+    fill="#7A3B1E" stroke="#111" stroke-width="4"/>
+  <!-- RIGHT heavy eyelid -->
+  <path d="M 146,56 Q 178,40 210,56 L 210,64 Q 178,53 146,64 Z"
+    fill="#7A3B1E" stroke="#111" stroke-width="4"/>
+
+  <!-- Left eyebrow — thick, slightly furrowed inward -->
+  <path d="M 66,44 Q 100,32 130,42"
+    fill="none" stroke="#111" stroke-width="6" stroke-linecap="round"/>
+  <!-- Right eyebrow -->
+  <path d="M 148,40 Q 178,30 208,42"
+    fill="none" stroke="#111" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- Eyebrow inner furrow crease left -->
+  <path d="M 128,43 Q 135,38 130,42" fill="none" stroke="#111" stroke-width="3" stroke-linecap="round"/>
+  <!-- Eyebrow inner furrow crease right -->
+  <path d="M 148,40 Q 143,36 148,41" fill="none" stroke="#111" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- CIGARETTE — angled, sticking out bottom-left -->
+  <!-- Cigarette body (tan/cream) -->
+  <rect x="4" y="93" width="62" height="10" rx="5"
+    fill="#E8DDB5" stroke="#111" stroke-width="2.5"
+    transform="rotate(-8, 35, 98)"/>
+  <!-- Filter tip (slightly lighter) -->
+  <rect x="48" y="91" width="18" height="10" rx="4"
+    fill="#D4C8A0" stroke="#111" stroke-width="2"
+    transform="rotate(-8, 57, 96)"/>
+  <!-- Lit end / ember -->
+  <circle cx="8" cy="99" r="5.5" fill="#D0390E" transform="rotate(-8, 8, 99)"/>
+  <circle cx="8" cy="99" r="3" fill="#FF6A3D" transform="rotate(-8, 8, 99)" opacity="0.8"/>
+
   <!-- Smoke wisp 1 -->
-  <path d="M14,70 Q8,58 12,46 Q16,34 10,22" fill="none" stroke="rgba(220,220,220,0.6)" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M 4,92 C -2,78 2,64 -4,50 C -8,38 -2,26 -6,14"
+    fill="none" stroke="rgba(200,200,200,0.65)" stroke-width="3" stroke-linecap="round"/>
   <!-- Smoke wisp 2 -->
-  <path d="M20,68 Q26,56 22,44 Q18,32 24,20" fill="none" stroke="rgba(220,220,220,0.4)" stroke-width="2" stroke-linecap="round"/>
-  <!-- Mouth line -->
-  <path d="M75,88 Q100,92 125,88" fill="none" stroke="#1a0a00" stroke-width="3" stroke-linecap="round"/>
+  <path d="M 12,90 C 18,76 14,62 20,50 C 24,40 18,28 24,16"
+    fill="none" stroke="rgba(200,200,200,0.45)" stroke-width="2.2" stroke-linecap="round"/>
 </svg>`;
+}
 
-// Smaller variant for result display
-const FACE_SVG_SM = `
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 130" width="80" height="52">
-  <path d="M20,65 C15,40 30,20 60,18 C80,16 110,14 140,18 C165,22 185,38 182,60 C180,80 170,100 145,108 C120,116 75,118 50,110 C28,103 22,85 20,65 Z"
-        fill="#8B5E3C" stroke="#1a0a00" stroke-width="4"/>
-  <ellipse cx="72" cy="52" rx="22" ry="18" fill="#fff" stroke="#1a0a00" stroke-width="3"/>
-  <ellipse cx="128" cy="52" rx="22" ry="18" fill="#fff" stroke="#1a0a00" stroke-width="3"/>
-  <ellipse cx="76" cy="56" rx="10" ry="12" fill="#1a0a00"/>
-  <ellipse cx="132" cy="56" rx="10" ry="12" fill="#1a0a00"/>
-  <circle cx="80" cy="50" r="3" fill="#fff"/>
-  <circle cx="136" cy="50" r="3" fill="#fff"/>
-  <path d="M50,44 Q72,34 94,44" fill="#8B5E3C" stroke="#1a0a00" stroke-width="3" stroke-linecap="round"/>
-  <path d="M106,44 Q128,34 150,44" fill="#8B5E3C" stroke="#1a0a00" stroke-width="3" stroke-linecap="round"/>
-  <path d="M50,36 Q72,26 94,34" fill="none" stroke="#1a0a00" stroke-width="4" stroke-linecap="round"/>
-  <path d="M106,34 Q128,26 150,36" fill="none" stroke="#1a0a00" stroke-width="4" stroke-linecap="round"/>
-  <rect x="18" y="72" width="48" height="7" rx="3.5" fill="#f5f0e0" stroke="#1a0a00" stroke-width="2"/>
-  <rect x="18" y="72" width="10" height="7" rx="3.5" fill="#c0392b"/>
-  <path d="M14,70 Q8,58 12,46 Q16,34 10,22" fill="none" stroke="rgba(220,220,220,0.6)" stroke-width="2.5" stroke-linecap="round"/>
-  <path d="M75,88 Q100,92 125,88" fill="none" stroke="#1a0a00" stroke-width="3" stroke-linecap="round"/>
-</svg>`;
-
-// ── Spawn floating faces ──
-const FACE_POSITIONS = [
-  { top: '8%',  left: '5%',  delay: '0s',   duration: '7s',  size: 105 },
-  { top: '5%',  right: '4%', delay: '1.2s', duration: '8.5s', size: 90 },
-  { top: '35%', left: '2%',  delay: '0.5s', duration: '6.8s', size: 100 },
-  { top: '60%', right: '3%', delay: '2s',   duration: '9s',  size: 95 },
-  { top: '75%', left: '6%',  delay: '1.8s', duration: '7.5s', size: 88 },
-  { top: '82%', right: '6%', delay: '0.9s', duration: '8s',  size: 102 },
+// ── Spawn 6 floating faces ──
+const FACE_SLOTS = [
+  { top: '6%',  left: '3%',  delay: '0s',    dur: '7.2s', w: 130, h: 75 },
+  { top: '4%',  right: '3%', delay: '1.4s',  dur: '8.8s', w: 112, h: 65 },
+  { top: '38%', left: '1%',  delay: '0.6s',  dur: '6.6s', w: 124, h: 72 },
+  { top: '58%', right: '2%', delay: '2.1s',  dur: '9.2s', w: 118, h: 68 },
+  { top: '76%', left: '4%',  delay: '1.9s',  dur: '7.8s', w: 108, h: 63 },
+  { top: '80%', right: '5%', delay: '0.8s',  dur: '8.2s', w: 126, h: 73 },
 ];
 
 function spawnFaces() {
-  const container = document.getElementById('facesContainer');
-  FACE_POSITIONS.forEach((pos, i) => {
+  const c = document.getElementById('facesContainer');
+  FACE_SLOTS.forEach(s => {
     const el = document.createElement('div');
     el.className = 'floating-face';
-    el.innerHTML = FACE_SVG;
-    el.querySelector('svg').setAttribute('width', pos.size);
-    el.querySelector('svg').setAttribute('height', Math.round(pos.size * 0.65));
+    el.innerHTML = makeFaceSVG(s.w, s.h);
     Object.assign(el.style, {
-      top:    pos.top    || 'auto',
-      left:   pos.left   || 'auto',
-      right:  pos.right  || 'auto',
-      bottom: pos.bottom || 'auto',
-      animationDelay:    pos.delay,
-      animationDuration: pos.duration,
+      top:               s.top    || 'auto',
+      left:              s.left   || 'auto',
+      right:             s.right  || 'auto',
+      bottom:            s.bottom || 'auto',
+      animationDelay:    s.delay,
+      animationDuration: s.dur,
     });
     el.addEventListener('click', showPopup);
-    container.appendChild(el);
+    c.appendChild(el);
   });
 }
 
 // ── Popup ──
 function showPopup() {
+  document.getElementById('popupFace').innerHTML = makeFaceSVG(100, 58);
   document.getElementById('popupOverlay').classList.add('active');
 }
 function closePopup() {
@@ -100,246 +118,178 @@ document.getElementById('popupOverlay').addEventListener('click', function(e) {
   if (e.target === this) closePopup();
 });
 
-// ── Quiz data ──
-const QUESTIONS = [
-  {
-    q: "You need to remember something important. You:",
-    opts: [
-      { text: "Write it down immediately",           score: 0 },
-      { text: "Tell yourself you'll remember",       score: 1 },
-      { text: "Forget it before finishing the sentence", score: 2 },
-      { text: "What were we talking about?",         score: 3 },
-    ]
-  },
-  {
-    q: "It's 3 AM. You have work at 8 AM. You are:",
-    opts: [
-      { text: "Asleep like a normal person",         score: 0 },
-      { text: "Scrolling Twitter for 'just 5 more minutes'", score: 1 },
-      { text: "Deep in a YouTube rabbit hole about medieval cheese", score: 2 },
-      { text: "Starting a new hobby you'll abandon tomorrow", score: 3 },
-    ]
-  },
-  {
-    q: "Someone explains something to you clearly. You:",
-    opts: [
-      { text: "Understand and apply it",             score: 0 },
-      { text: "Nod but need a second explanation",  score: 1 },
-      { text: "Ask the same question 3 times",       score: 2 },
-      { text: "Confidently do the opposite",         score: 3 },
-    ]
-  },
-  {
-    q: "You read the terms and conditions. You:",
-    opts: [
-      { text: "Actually read them",                  score: 0 },
-      { text: "Scroll to the bottom",               score: 1 },
-      { text: "Click agree without even opening it", score: 2 },
-      { text: "Terms and what?",                    score: 3 },
-    ]
-  },
-  {
-    q: "How do you handle your finances?",
-    opts: [
-      { text: "Budget, save, invest",                score: 0 },
-      { text: "Spend first, think later",            score: 1 },
-      { text: "Bought a crypto called 'MoonDogeCoin'", score: 2 },
-      { text: "I have $4 and no regrets",            score: 3 },
-    ]
-  },
-  {
-    q: "You see a 'WET FLOOR' sign. You:",
-    opts: [
-      { text: "Walk around it carefully",            score: 0 },
-      { text: "Touch it to check if it's wet",      score: 1 },
-      { text: "Slip and immediately touch it again", score: 2 },
-      { text: "Use it as a frisbee",                 score: 3 },
-    ]
-  },
-  {
-    q: "Your battery is at 2%. You:",
-    opts: [
-      { text: "Plug it in immediately",              score: 0 },
-      { text: "Think 'it'll be fine'",               score: 1 },
-      { text: "Open TikTok",                         score: 2 },
-      { text: "Start a video call",                  score: 3 },
-    ]
-  },
-  {
-    q: "The recipe says 'add salt to taste'. You:",
-    opts: [
-      { text: "Add a pinch and taste",               score: 0 },
-      { text: "Add too much, feel bad",              score: 1 },
-      { text: "Pour until satisfied",                score: 2 },
-      { text: "Add sugar because they look the same", score: 3 },
-    ]
-  },
-  {
-    q: "When you're sick you:",
-    opts: [
-      { text: "Rest and drink fluids",               score: 0 },
-      { text: "Google symptoms and panic",           score: 1 },
-      { text: "Self-diagnose 3 terminal diseases",   score: 2 },
-      { text: "Go to a party anyway 'it's nothing'", score: 3 },
-    ]
-  },
-  {
-    q: "Someone asks if you're okay. You are clearly not okay. You say:",
-    opts: [
-      { text: "Honestly explain the situation",      score: 0 },
-      { text: "'I'm fine' (clearly not)",            score: 1 },
-      { text: "'I'm fine lol' with 12 'lol's",       score: 2 },
-      { text: "Start crying and say 'I'm fine'",     score: 3 },
-    ]
-  },
+// ── Deterministic hash from string → 0..1 float ──
+function hashStr(str) {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = (h * 16777619) >>> 0;
+  }
+  return h / 4294967295;
+}
+
+function seededRand(seed, salt) {
+  return hashStr(seed + salt);
+}
+
+// ── Score tiers ──
+const TIERS = [
+  { min: 0,  max: 19, tier: 'Barely R3tard3d',    desc: "Disappointingly functional. Seek more chaos." },
+  { min: 20, max: 39, tier: 'Mild R3tard3d',       desc: "A solid baseline. You make bad choices, but only sometimes." },
+  { min: 40, max: 59, tier: 'Average R3tard3d',    desc: "Right in the sweet spot. Chaos energy: moderate." },
+  { min: 60, max: 74, tier: 'Certified R3tard3d',  desc: "Now we're talking. Consistently unhinged. Respect." },
+  { min: 75, max: 89, tier: 'Elite R3tard3d',      desc: "Science cannot explain your decision-making. Icon." },
+  { min: 90, max: 100,tier: 'GOD-TIER R3tard3d',   desc: "You are the reason warning labels exist. A true legend." },
 ];
 
-const RESULTS = [
-  { min: 0,  max: 6,  label: "Barely R3tard3d",  desc: "You are disappointingly functional. Are you even trying? Seek r3tardation." },
-  { min: 7,  max: 13, label: "Mild R3tard3d",     desc: "A solid base level. You forget things, make bad choices occasionally. Respectable." },
-  { min: 14, max: 19, label: "Certified R3tard3d", desc: "Now we're talking. You consistently choose the wrong option and thrive on chaos." },
-  { min: 20, max: 24, label: "Maximum R3tard3d",  desc: "You are a force of nature. Science cannot explain how you function. Legend." },
-  { min: 25, max: 30, label: "GOD-TIER R3tard3d", desc: "You are the reason warning labels exist. A true pioneer. We salute you." },
+const STATS = [
+  { key: 'degen',      label: 'Degen Level',         fmt: pct => pct + '%' },
+  { key: 'braincell',  label: 'Brain Cells Left',     fmt: pct => Math.round(pct * 12) + ' / 100' },
+  { key: 'touchgrass', label: 'Touch Grass Urgency',  fmt: pct => pct + '%' },
+  { key: 'online',     label: 'Chronically Online',   fmt: pct => pct + '%' },
+  { key: 'posting',    label: 'Unhinged Posts/Day',   fmt: pct => (pct / 10).toFixed(1) },
+  { key: 'nft',        label: 'Rug Pull Survivor',    fmt: pct => pct + '%' },
 ];
 
-let currentQ = 0;
-let totalScore = 0;
-let finalScore = 0;
-let finalResult = null;
+let currentHandle = '';
+let currentScore  = 0;
+let currentTier   = null;
+let currentStats  = [];
 
-function startQuiz() {
-  currentQ = 0;
-  totalScore = 0;
-  showScreen('quizScreen');
-  renderQuestion();
-}
+function rateHandle() {
+  let handle = document.getElementById('handleInput').value.trim();
+  if (!handle) { document.getElementById('handleInput').focus(); return; }
+  handle = handle.replace(/^@+/, '');
 
-function renderQuestion() {
-  const q = QUESTIONS[currentQ];
-  document.getElementById('questionNum').textContent = `Question ${currentQ + 1} / ${QUESTIONS.length}`;
-  document.getElementById('questionText').textContent = q.q;
-  document.getElementById('progressBar').style.width = `${(currentQ / QUESTIONS.length) * 100}%`;
+  currentHandle = handle;
+  const seed = handle.toLowerCase();
 
-  const container = document.getElementById('optionsContainer');
-  container.innerHTML = '';
-  q.opts.forEach((opt, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'option-btn';
-    btn.textContent = opt.text;
-    btn.addEventListener('click', () => selectOption(opt.score, btn));
-    container.appendChild(btn);
-  });
-}
+  // Main score 0-100
+  currentScore = Math.round(seededRand(seed, 'main') * 100);
+  currentTier  = TIERS.find(t => currentScore >= t.min && currentScore <= t.max) || TIERS[TIERS.length - 1];
 
-function selectOption(score, btn) {
-  document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
+  // Individual stats
+  currentStats = STATS.map(s => ({
+    label: s.label,
+    raw:   Math.round(seededRand(seed, s.key) * 100),
+    fmt:   s.fmt,
+  }));
 
-  setTimeout(() => {
-    totalScore += score;
-    currentQ++;
-    if (currentQ < QUESTIONS.length) {
-      renderQuestion();
-    } else {
-      showResult();
-    }
-  }, 300);
-}
-
-function showResult() {
-  const pct = Math.round((totalScore / (QUESTIONS.length * 3)) * 100);
-  finalScore = pct;
-  finalResult = RESULTS.find(r => totalScore >= r.min && totalScore <= r.max) || RESULTS[RESULTS.length - 1];
-
-  document.getElementById('scoreNumber').textContent = pct + '%';
-  document.getElementById('scoreLabel').textContent = finalResult.label;
-  document.getElementById('scoreDesc').textContent = finalResult.desc;
-  document.getElementById('resultFaceSvg').innerHTML = FACE_SVG_SM;
-  document.getElementById('progressBar').style.width = '100%';
-
+  renderResult();
   showScreen('resultScreen');
 }
 
-function retryQuiz() { showScreen('homeScreen'); }
+function renderResult() {
+  document.getElementById('resultHandle').textContent = '@' + currentHandle;
+  document.getElementById('scoreBig').textContent     = currentScore + '%';
+  document.getElementById('scoreTier').textContent    = currentTier.tier;
+  document.getElementById('scoreDesc').textContent    = currentTier.desc;
 
-function showScreen(id) {
-  ['homeScreen','quizScreen','resultScreen'].forEach(s => {
-    document.getElementById(s).classList.toggle('hidden', s !== id);
+  // Avatar placeholder
+  const av = document.getElementById('resultAvatar');
+  av.innerHTML = makeFaceSVG(52, 30);
+  av.style.background = 'rgba(255,255,255,0.08)';
+
+  // Stats
+  const grid = document.getElementById('statsGrid');
+  grid.innerHTML = '';
+  currentStats.forEach(s => {
+    const item = document.createElement('div');
+    item.className = 'stat-item';
+    item.innerHTML = `
+      <div class="stat-label">${s.label}</div>
+      <div class="stat-value">${s.fmt(s.raw)}</div>
+      <div class="stat-bar-wrap"><div class="stat-bar" style="width:${s.raw}%"></div></div>
+    `;
+    grid.appendChild(item);
   });
 }
 
-// ── Card generation ──
-function buildResultText() {
-  return `I got ${finalScore}% — ${finalResult.label} on the R3tard3d Quiz!\nhow-r3tard3d-are-you.vercel.app`;
+function goHome() {
+  showScreen('homeScreen');
 }
 
+function showScreen(id) {
+  ['homeScreen', 'resultScreen'].forEach(s =>
+    document.getElementById(s).classList.toggle('hidden', s !== id)
+  );
+}
+
+// Allow Enter key
+document.getElementById('handleInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') rateHandle();
+});
+
+// ── Card download ──
 function downloadCard() {
   const canvas = document.createElement('canvas');
-  canvas.width = 800;
-  canvas.height = 450;
+  canvas.width  = 800;
+  canvas.height = 460;
   const ctx = canvas.getContext('2d');
 
-  // Background gradient
-  const grad = ctx.createRadialGradient(240, 180, 0, 400, 225, 520);
+  const grad = ctx.createRadialGradient(240, 180, 0, 400, 230, 530);
   grad.addColorStop(0, '#9B6DD0');
   grad.addColorStop(0.5, '#6B3FA0');
   grad.addColorStop(1, '#3D1A70');
   ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, 800, 450);
+  ctx.fillRect(0, 0, 800, 460);
 
   // Card panel
-  ctx.fillStyle = 'rgba(255,255,255,0.08)';
-  roundRect(ctx, 60, 40, 680, 370, 28);
-  ctx.fill();
-  ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+  ctx.fillStyle = 'rgba(255,255,255,0.09)';
+  roundRect(ctx, 60, 36, 680, 388, 28); ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,0.18)';
   ctx.lineWidth = 1.5;
-  roundRect(ctx, 60, 40, 680, 370, 28);
-  ctx.stroke();
+  roundRect(ctx, 60, 36, 680, 388, 28); ctx.stroke();
 
-  // Title
-  ctx.fillStyle = 'rgba(232,213,255,0.9)';
-  ctx.font = 'bold 18px sans-serif';
+  // Handle
+  ctx.fillStyle = 'rgba(212,176,255,0.9)';
+  ctx.font = 'bold 20px sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('R3TARD3D SCORE', 400, 110);
-
-  // Score
-  ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 110px sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText(finalScore + '%', 400, 240);
+  ctx.fillText('@' + currentHandle, 400, 90);
 
   // Label
-  ctx.fillStyle = '#E8D5FF';
-  ctx.font = 'bold 30px sans-serif';
-  ctx.fillText(finalResult.label, 400, 285);
+  ctx.fillStyle = 'rgba(212,176,255,0.7)';
+  ctx.font = 'bold 15px sans-serif';
+  ctx.fillText('R3TARD3D SCORE', 400, 118);
 
-  // Description
-  ctx.fillStyle = 'rgba(232,213,255,0.75)';
-  ctx.font = '16px sans-serif';
-  wrapText(ctx, finalResult.desc, 400, 322, 560, 22);
+  // Big score
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 120px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(currentScore + '%', 400, 252);
+
+  // Tier
+  ctx.fillStyle = '#E8D5FF';
+  ctx.font = 'bold 28px sans-serif';
+  ctx.fillText(currentTier.tier, 400, 294);
+
+  // Desc
+  ctx.fillStyle = 'rgba(212,176,255,0.75)';
+  ctx.font = '15px sans-serif';
+  wrapText(ctx, currentTier.desc, 400, 328, 560, 22);
 
   // Watermark
-  ctx.fillStyle = 'rgba(255,255,255,0.35)';
+  ctx.fillStyle = 'rgba(255,255,255,0.3)';
   ctx.font = '13px sans-serif';
-  ctx.fillText('how-r3tard3d-are-you · Made by sick @thinkisick', 400, 390);
+  ctx.fillText('how-r3tard3d-are-you · Made by sick @thinkisick', 400, 402);
 
-  const link = document.createElement('a');
-  link.download = 'r3tard3d-score.png';
-  link.href = canvas.toDataURL('image/png');
-  link.click();
+  const a = document.createElement('a');
+  a.download = 'r3tard3d-score.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
 }
 
 function roundRect(ctx, x, y, w, h, r) {
   ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.lineTo(x + w - r, y);
-  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-  ctx.lineTo(x + w, y + h - r);
-  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-  ctx.lineTo(x + r, y + h);
-  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-  ctx.lineTo(x, y + r);
-  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y);
+  ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+  ctx.lineTo(x+w, y+h-r);
+  ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+  ctx.lineTo(x+r, y+h);
+  ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+  ctx.lineTo(x, y+r);
+  ctx.quadraticCurveTo(x, y, x+r, y);
   ctx.closePath();
 }
 
@@ -352,20 +302,21 @@ function wrapText(ctx, text, x, y, maxW, lineH) {
       ctx.fillText(line.trim(), x, y);
       line = words[i] + ' ';
       y += lineH;
-    } else {
-      line = test;
-    }
+    } else { line = test; }
   }
   ctx.fillText(line.trim(), x, y);
 }
 
+// ── Share / Copy ──
 function shareTwitter() {
-  const text = encodeURIComponent(`I got ${finalScore}% — ${finalResult.label} on the R3tard3d Quiz 🧠\n\nHow r3tard3d are you?`);
+  const text = encodeURIComponent(
+    `I scored ${currentScore}% — ${currentTier.tier} 🧠\n\nHow R3tard3d are you? Find out:`
+  );
   window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
 }
 
 function copyResult() {
-  const text = buildResultText();
+  const text = `@${currentHandle} R3tard3d Score: ${currentScore}% — ${currentTier.tier}\n${currentTier.desc}`;
   if (navigator.clipboard) {
     navigator.clipboard.writeText(text).then(() => {
       const btn = document.querySelector('.btn-copy');
