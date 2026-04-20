@@ -49,17 +49,15 @@ function hashStr(str) {
 function seededRand(seed, salt) { return hashStr(seed + salt); }
 function seededPick(seed, salt, arr) { return arr[Math.floor(seededRand(seed, salt) * arr.length)]; }
 
-// ── Content pools ──
-const TITLES = ['Chaos Engine', 'Timeline Menace', 'Reply Goblin', 'Hot Take Machine', 'Thread Warrior', 'Ratio King', 'Degen Oracle'];
-const ABILITIES = ['⚡ Ratio Blast', '🔥 Opinion Drop', '🌀 Reply Storm', '💥 Quote Attack', '📡 Viral Misfire', '🎯 Clout Sniper'];
-const FLAVORS = [
-  '"this will age badly"',
-  '"internet never forgets"',
-  '"why would you post this"',
-  '"main character detected"',
-  '"touching grass not found"',
-  '"unhinged but consistent"',
+// ── Content pools (random each time for virality) ──
+const TITLES   = ['Chaos Engine','Timeline Menace','Reply Goblin','Hot Take Machine','Thread Warrior','Ratio King','Degen Oracle','Touch Grass Never','Unhinged Poster'];
+const ABILITIES = ['⚡ Ratio Blast','🔥 Opinion Drop','🌀 Reply Storm','💥 Quote Attack','📡 Viral Misfire','🎯 Clout Sniper','🧠 Galaxy Brain','☠️ Main Character Mode'];
+const FLAVORS  = [
+  '"this will age badly"','"internet never forgets"','"why would you post this"',
+  '"main character detected"','"touching grass not found"','"unhinged but consistent"',
+  '"timeline is cooked"','"ratio incoming"',
 ];
+function randPick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
 // ── Rarity system ──
 const RARITIES = [
@@ -67,7 +65,8 @@ const RARITIES = [
   { id: 'mythic',    min: 90,  max: 99,  label: '✦ MYTHIC ✦'    },
   { id: 'epic',      min: 70,  max: 89,  label: '✦ EPIC ✦'      },
   { id: 'rare',      min: 40,  max: 69,  label: '✦ RARE ✦'      },
-  { id: 'common',    min: 0,   max: 39,  label: '✦ COMMON ✦'    },
+  { id: 'common',    min: 10,  max: 39,  label: '✦ COMMON ✦'    },
+  { id: 'secret',    min: 0,   max: 9,   label: '? ? SECRET ? ?' },
 ];
 
 const TIERS = [
@@ -95,12 +94,27 @@ let currentTier      = null;
 let currentRarity    = null;
 let currentStats     = [];
 let currentAvatarUrl = '';
+let currentAvatarB64 = null;
 let currentTitle     = '';
 let currentAbility   = '';
 let currentFlavor    = '';
 
+// Fetch avatar and convert to base64 (avoids CORS issues in html2canvas)
+async function fetchAvatarBase64(url) {
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) return null;
+    const blob = await resp.blob();
+    return new Promise(res => {
+      const r = new FileReader();
+      r.onloadend = () => res(r.result);
+      r.readAsDataURL(blob);
+    });
+  } catch { return null; }
+}
+
 // ── Rate handle ──
-function rateHandle() {
+async function rateHandle() {
   let handle = document.getElementById('handleInput').value.trim();
   if (!handle) { document.getElementById('handleInput').focus(); return; }
   handle = handle.replace(/^@+/, '');
@@ -112,28 +126,52 @@ function rateHandle() {
   btn.innerHTML = `Scanning... <img src="${FACE_IMG}" class="btn-face-icon" alt="">`;
   document.getElementById('scanningBlock').classList.remove('hidden');
 
-  currentAvatarUrl = `https://unavatar.io/twitter/${encodeURIComponent(handle)}`;
+  const avatarUrl = `https://unavatar.io/twitter/${encodeURIComponent(handle)}`;
+  currentAvatarUrl = avatarUrl;
 
+  // Run 5s delay and avatar fetch in parallel
+  const [avatarB64] = await Promise.all([
+    fetchAvatarBase64(avatarUrl),
+    new Promise(res => setTimeout(res, 5000)),
+  ]);
+  currentAvatarB64 = avatarB64;
+
+  const HALL_OF_FAME = ['thinkisick', 'dreiki10'];
+  currentScore   = HALL_OF_FAME.includes(seed) ? 100 : Math.round(seededRand(seed, 'main') * 100);
+  currentTier    = TIERS.find(t => currentScore >= t.min && currentScore <= t.max) || TIERS[TIERS.length - 1];
+  currentRarity  = RARITIES.find(r => currentScore >= r.min && currentScore <= r.max) || RARITIES[RARITIES.length - 1];
+  currentTitle   = randPick(TITLES);
+  currentAbility = randPick(ABILITIES);
+  currentFlavor  = randPick(FLAVORS);
+  currentStats   = STATS.map(s => ({ label: s.label, raw: Math.round(seededRand(seed, s.key) * 100), fmt: s.fmt }));
+
+  btn.disabled = false;
+  btn.innerHTML = `Rate me <img src="${FACE_IMG}" class="btn-face-icon" alt="">`;
+  document.getElementById('scanningBlock').classList.add('hidden');
+
+  prepareResult();
+  showScreen('resultScreen');
+}
+
+// Prepare card data without showing it yet (tap-to-reveal)
+function prepareResult() {
+  renderResult();
+  // Show reveal overlay, hide card
+  document.getElementById('revealOverlay').classList.remove('hidden', 'dismissing');
+  document.getElementById('cardDropWrap').classList.add('hidden');
+  document.querySelectorAll('.share-buttons, .btn-retry, .disclaimer:last-of-type')
+    .forEach(el => el.style.visibility = 'hidden');
+}
+
+function revealCard() {
+  const overlay = document.getElementById('revealOverlay');
+  overlay.classList.add('dismissing');
   setTimeout(() => {
-    const HALL_OF_FAME = ['thinkisick', 'dreiki10'];
-    currentScore = HALL_OF_FAME.includes(seed) ? 100 : Math.round(seededRand(seed, 'main') * 100);
-
-    currentTier    = TIERS.find(t => currentScore >= t.min && currentScore <= t.max) || TIERS[TIERS.length - 1];
-    currentRarity  = RARITIES.find(r => currentScore >= r.min && currentScore <= r.max) || RARITIES[RARITIES.length - 1];
-    currentTitle   = seededPick(seed, 'title', TITLES);
-    currentAbility = seededPick(seed, 'ability', ABILITIES);
-    currentFlavor  = seededPick(seed, 'flavor', FLAVORS);
-    currentStats   = STATS.map(s => ({
-      label: s.label, raw: Math.round(seededRand(seed, s.key) * 100), fmt: s.fmt,
-    }));
-
-    btn.disabled = false;
-    btn.innerHTML = `Rate me <img src="${FACE_IMG}" class="btn-face-icon" alt="">`;
-    document.getElementById('scanningBlock').classList.add('hidden');
-
-    renderResult();
-    showScreen('resultScreen');
-  }, 5000);
+    overlay.classList.add('hidden');
+    document.getElementById('cardDropWrap').classList.remove('hidden');
+    document.querySelectorAll('.share-buttons, .btn-retry, .disclaimer:last-of-type')
+      .forEach(el => el.style.visibility = '');
+  }, 350);
 }
 
 function renderResult() {
@@ -146,12 +184,12 @@ function renderResult() {
   document.getElementById('resultHandle').textContent = '@' + currentHandle;
   document.getElementById('scoreBig').textContent     = currentScore + '%';
 
-  // Avatar
+  // Avatar — use base64 so html2canvas can capture it
   const av = document.getElementById('resultAvatar');
   const img = document.createElement('img');
   img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
-  img.src = currentAvatarUrl;
-  img.onerror = () => { img.src = FACE_IMG; img.style.objectFit = 'contain'; img.style.padding = '4px'; };
+  img.src = currentAvatarB64 || FACE_IMG;
+  if (!currentAvatarB64) { img.style.objectFit = 'contain'; img.style.padding = '4px'; }
   av.innerHTML = ''; av.appendChild(img);
 
   // Texts
@@ -224,20 +262,20 @@ handleInputEl.addEventListener('input', () => {
 handleInputEl.addEventListener('keydown', e => { if (e.key === 'Enter') rateHandle(); });
 
 // ── Download card via html2canvas ──
+// Avatar is already base64 in the DOM, so no CORS issues
 function downloadCard() {
   const btn = document.querySelector('.btn-download');
   btn.textContent = '⏳ Generating...'; btn.disabled = true;
 
-  const source = document.getElementById('resultCard');
-  html2canvas(source, { scale: 2, backgroundColor: null, useCORS: true, logging: false })
-    .then(canvas => {
-      const a = document.createElement('a');
-      a.download = 'r3tard3d-card.png';
-      a.href = canvas.toDataURL('image/png');
-      a.click();
-      btn.textContent = '⬇ Download Card'; btn.disabled = false;
-    })
-    .catch(() => { btn.textContent = '⬇ Download Card'; btn.disabled = false; });
+  html2canvas(document.getElementById('resultCard'), {
+    scale: 2, backgroundColor: '#0f0820', useCORS: false, logging: false,
+  }).then(canvas => {
+    const a = document.createElement('a');
+    a.download = 'r3tard3d-card.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+    btn.textContent = '⬇ Download Card'; btn.disabled = false;
+  }).catch(() => { btn.textContent = '⬇ Download Card'; btn.disabled = false; });
 }
 
 // ── Share / Copy ──

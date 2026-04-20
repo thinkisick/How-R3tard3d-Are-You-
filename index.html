@@ -47,8 +47,16 @@
   <!-- RESULT SCREEN -->
   <div class="screen hidden" id="resultScreen">
 
-    <!-- Loot drop card -->
-    <div class="card-drop-wrap" id="cardDropWrap">
+    <!-- Tap to reveal overlay (shown first) -->
+    <div class="reveal-overlay" id="revealOverlay" onclick="revealCard()">
+      <div class="reveal-back">
+        <img src="face.png" class="reveal-face" alt="">
+        <p class="reveal-text">Tap to reveal your card</p>
+      </div>
+    </div>
+
+    <!-- Loot drop card (hidden until reveal) -->
+    <div class="card-drop-wrap hidden" id="cardDropWrap">
       <div class="card-border-spin" id="cardBorderSpin"></div>
       <div class="loot-card" id="resultCard">
         <div class="card-particles" id="cardParticles"></div>

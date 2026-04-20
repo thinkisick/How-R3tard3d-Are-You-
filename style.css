@@ -131,6 +131,42 @@ body {
   40%          { transform: scale(1.2); opacity: 1; }
 }
 
+/* ── Tap to reveal ── */
+.reveal-overlay {
+  width: 100%; max-width: 380px; margin-bottom: 22px;
+  cursor: pointer;
+  animation: cardReveal 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+.reveal-back {
+  background: linear-gradient(135deg, #3D1A70 0%, #1a0840 100%);
+  border: 2px solid rgba(168,85,247,0.4);
+  border-radius: 26px;
+  padding: 48px 24px;
+  display: flex; flex-direction: column; align-items: center; gap: 20px;
+  box-shadow: 0 0 40px rgba(168,85,247,0.3), 0 16px 48px rgba(0,0,0,0.5);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.reveal-back:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 60px rgba(168,85,247,0.45), 0 20px 60px rgba(0,0,0,0.6);
+}
+.reveal-face {
+  width: 100px; height: auto;
+  animation: scanPulse 1.6s ease-in-out infinite;
+}
+.reveal-text {
+  font-size: 1.1rem; font-weight: 700; color: #D4B0FF; letter-spacing: 0.5px;
+}
+
+@keyframes revealDismiss {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(1.15); }
+}
+.reveal-overlay.dismissing {
+  animation: revealDismiss 0.35s ease-in both;
+  pointer-events: none;
+}
+
 /* ══════════════════════════════════════════
    LOOT CARD
 ══════════════════════════════════════════ */
@@ -166,6 +202,22 @@ body {
 }
 
 /* ── Rarity variants ── */
+
+/* SECRET */
+.rarity-secret .card-border-spin {
+  opacity: 1;
+  background: conic-gradient(from 0deg, #e2e8f0, #94a3b8, #f8fafc, #64748b, #e2e8f0);
+  animation: spinBorder 4s linear infinite;
+}
+.rarity-secret .loot-card {
+  background: rgba(5, 5, 15, 0.97);
+  box-shadow: 0 0 50px rgba(255,255,255,0.15), 0 0 100px rgba(148,163,184,0.1), 0 20px 60px rgba(0,0,0,0.8);
+}
+.rarity-secret .card-title {
+  background: linear-gradient(135deg, #e2e8f0, #94a3b8, #fff);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.rarity-secret .card-rarity-bar { color: #94a3b8; border-color: rgba(148,163,184,0.3); }
 
 /* COMMON */
 .rarity-common .card-border-spin { opacity: 0; }
