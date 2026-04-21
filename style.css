@@ -92,6 +92,44 @@ body {
   line-height: 1.25; text-align: center;
 }
 
+/* JohnWRichKid popup */
+.hahaha-popup-box {
+  max-width: 360px;
+  background: linear-gradient(160deg, #1a0505 0%, #4a0a0a 55%, #7a1515 100%);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  position: relative;
+}
+.hahaha-popup-box::before {
+  content: '';
+  position: absolute; inset: -2px; border-radius: 26px; z-index: -1;
+  background: linear-gradient(135deg, #ff3333, #ff8800, #ff3333);
+  animation: glowPulse 1.2s ease-in-out infinite;
+}
+.hahaha-popup-img {
+  width: 160px; height: 160px; border-radius: 16px; object-fit: cover;
+  box-shadow: 0 0 40px rgba(255,50,50,0.6), 0 0 80px rgba(255,100,0,0.3);
+  animation: hahahaShake 0.4s ease-in-out infinite;
+}
+@keyframes hahahaShake {
+  0%,100% { transform: rotate(-2deg) scale(1);    }
+  25%      { transform: rotate(3deg)  scale(1.04); }
+  75%      { transform: rotate(-3deg) scale(1.02); }
+}
+.hahaha-popup-title {
+  font-size: 1.25rem; font-weight: 900; color: #fff;
+  text-align: center; line-height: 1.3;
+  text-shadow: 0 0 20px rgba(255,80,80,0.8);
+}
+.hahaha-popup-sub {
+  font-size: 0.88rem; color: rgba(255,180,180,0.75);
+  text-align: center; margin-top: -6px;
+}
+.hahaha-popup-box button {
+  background: rgba(255,60,60,0.2); border: 1px solid rgba(255,80,80,0.4);
+}
+.hahaha-popup-box button:hover { background: rgba(255,60,60,0.35); }
+
 /* ── Screens ── */
 .screen {
   position: relative; z-index: 20; width: 100%; max-width: 480px;

@@ -53,6 +53,50 @@ document.getElementById('improvePopupOverlay').addEventListener('click', functio
   if (e.target === this) closeImprovePopup();
 });
 
+function playLaughSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === 'suspended') ctx.resume();
+    // Unlock iOS audio
+    const silent = ctx.createBuffer(1, 1, 22050);
+    const s = ctx.createBufferSource(); s.buffer = silent;
+    s.connect(ctx.destination); s.start(0);
+    const t = ctx.currentTime + 0.08;
+    // 7 "ha" bursts — rising pitch, rhythmic like real laughter
+    [0, 0.17, 0.34, 0.52, 0.71, 0.91, 1.12].forEach((offset, i) => {
+      const freq = 260 + i * 14;
+      const osc  = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const osc2 = ctx.createOscillator(); // harmonic layer for richness
+      const g2   = ctx.createGain();
+      osc.connect(gain);  gain.connect(ctx.destination);
+      osc2.connect(g2);   g2.connect(ctx.destination);
+      osc.type  = 'sawtooth'; osc.frequency.value = freq;
+      osc2.type = 'square';   osc2.frequency.value = freq * 2;
+      // Main burst envelope
+      gain.gain.setValueAtTime(0, t + offset);
+      gain.gain.linearRampToValueAtTime(0.26, t + offset + 0.025);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + offset + 0.14);
+      // Harmonic quieter
+      g2.gain.setValueAtTime(0, t + offset);
+      g2.gain.linearRampToValueAtTime(0.08, t + offset + 0.02);
+      g2.gain.exponentialRampToValueAtTime(0.001, t + offset + 0.1);
+      osc.start(t + offset);  osc.stop(t + offset + 0.18);
+      osc2.start(t + offset); osc2.stop(t + offset + 0.14);
+    });
+    setTimeout(() => { try { ctx.close(); } catch(e) {} }, 3500);
+  } catch(e) {}
+}
+
+function openHahahaPopup() {
+  document.getElementById('hahahaPopup').classList.add('active');
+  playLaughSound();
+}
+function closeHahahaPopup() { document.getElementById('hahahaPopup').classList.remove('active'); }
+document.getElementById('hahahaPopup').addEventListener('click', function(e) {
+  if (e.target === this) closeHahahaPopup();
+});
+
 // ── Hash / seeded random ──
 function hashStr(str) {
   let h = 2166136261;
@@ -165,6 +209,16 @@ async function rateHandle() {
   btn.disabled = true;
   btn.innerHTML = `Scanning... <img src="${FACE_IMG}" class="btn-face-icon" alt="">`;
   document.getElementById('scanningBlock').classList.remove('hidden');
+
+  // Special intercept — show laugh popup after fake scan
+  if (handle.toLowerCase() === 'johnwrichkid') {
+    await new Promise(r => setTimeout(r, 2200));
+    btn.disabled = false;
+    btn.innerHTML = `Rate me <img src="${FACE_IMG}" class="btn-face-icon" alt="">`;
+    document.getElementById('scanningBlock').classList.add('hidden');
+    openHahahaPopup();
+    return;
+  }
 
   // Run 5s delay and avatar fetch in parallel
   const [avatarB64] = await Promise.all([
