@@ -14,14 +14,21 @@ const FACE_SLOTS = [
 
 function spawnFaces() {
   const c = document.getElementById('facesContainer');
-  FACE_SLOTS.forEach(s => {
+  const mobile = window.innerWidth <= 480;
+  FACE_SLOTS.forEach((s, i) => {
     const el = document.createElement('div');
     el.className = 'floating-face';
     const img = document.createElement('img');
-    img.src = FACE_IMG; img.width = s.w; img.draggable = false;
+    img.src = FACE_IMG;
+    // On mobile shrink all faces and push the two middle ones below the content
+    img.width = mobile ? Math.round(s.w * 0.52) : s.w;
+    img.draggable = false;
     el.appendChild(img);
+    const top = mobile && i === 2 ? '74%'
+               : mobile && i === 3 ? '86%'
+               : (s.top || 'auto');
     Object.assign(el.style, {
-      top: s.top || 'auto', left: s.left || 'auto',
+      top, left: s.left || 'auto',
       right: s.right || 'auto', bottom: s.bottom || 'auto',
       animationDelay: s.delay, animationDuration: s.dur,
     });
