@@ -12,23 +12,29 @@ const FACE_SLOTS = [
   { top: '80%', right: '5%', delay: '0.8s', dur: '8.2s', w: 126 },
 ];
 
+// Mobile slots: 4 in top zone (above content), 2 in bottom zone (above ticker)
+// Sized and spaced so they never overlap each other or the ticker
+const FACE_SLOTS_MOBILE = [
+  { top: '4%',  left: '2%',  delay: '0s',   dur: '7.2s', w: 66 },
+  { top: '3%',  right: '2%', delay: '1.4s', dur: '8.8s', w: 58 },
+  { top: '17%', left: '1%',  delay: '0.6s', dur: '6.6s', w: 62 },
+  { top: '16%', right: '1%', delay: '2.1s', dur: '9.2s', w: 60 },
+  { top: '77%', left: '3%',  delay: '1.9s', dur: '7.8s', w: 56 },
+  { top: '79%', right: '3%', delay: '0.8s', dur: '8.2s', w: 60 },
+];
+
 function spawnFaces() {
   const c = document.getElementById('facesContainer');
   const mobile = window.innerWidth <= 480;
-  FACE_SLOTS.forEach((s, i) => {
+  const slots = mobile ? FACE_SLOTS_MOBILE : FACE_SLOTS;
+  slots.forEach(s => {
     const el = document.createElement('div');
     el.className = 'floating-face';
     const img = document.createElement('img');
-    img.src = FACE_IMG;
-    // On mobile shrink all faces and push the two middle ones below the content
-    img.width = mobile ? Math.round(s.w * 0.52) : s.w;
-    img.draggable = false;
+    img.src = FACE_IMG; img.width = s.w; img.draggable = false;
     el.appendChild(img);
-    const top = mobile && i === 2 ? '74%'
-               : mobile && i === 3 ? '86%'
-               : (s.top || 'auto');
     Object.assign(el.style, {
-      top, left: s.left || 'auto',
+      top: s.top || 'auto', left: s.left || 'auto',
       right: s.right || 'auto', bottom: s.bottom || 'auto',
       animationDelay: s.delay, animationDuration: s.dur,
     });
