@@ -12,15 +12,12 @@ const FACE_SLOTS = [
   { top: '80%', right: '5%', delay: '0.8s', dur: '8.2s', w: 126 },
 ];
 
-// Mobile slots: 4 in top zone (above content), 2 in bottom zone (above ticker)
-// Sized and spaced so they never overlap each other or the ticker
+// Mobile: 2 top, 2 bottom — clear of content and ticker
 const FACE_SLOTS_MOBILE = [
   { top: '4%',  left: '2%',  delay: '0s',   dur: '7.2s', w: 66 },
-  { top: '3%',  right: '2%', delay: '1.4s', dur: '8.8s', w: 58 },
-  { top: '17%', left: '1%',  delay: '0.6s', dur: '6.6s', w: 62 },
-  { top: '16%', right: '1%', delay: '2.1s', dur: '9.2s', w: 60 },
-  { top: '77%', left: '3%',  delay: '1.9s', dur: '7.8s', w: 56 },
-  { top: '79%', right: '3%', delay: '0.8s', dur: '8.2s', w: 60 },
+  { top: '3%',  right: '2%', delay: '1.4s', dur: '8.8s', w: 60 },
+  { top: '77%', left: '3%',  delay: '1.9s', dur: '7.8s', w: 58 },
+  { top: '79%', right: '3%', delay: '0.8s', dur: '8.2s', w: 62 },
 ];
 
 function spawnFaces() {
@@ -61,36 +58,8 @@ document.getElementById('improvePopupOverlay').addEventListener('click', functio
 
 function playLaughSound() {
   try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    if (ctx.state === 'suspended') ctx.resume();
-    // Unlock iOS audio
-    const silent = ctx.createBuffer(1, 1, 22050);
-    const s = ctx.createBufferSource(); s.buffer = silent;
-    s.connect(ctx.destination); s.start(0);
-    const t = ctx.currentTime + 0.08;
-    // 7 "ha" bursts — rising pitch, rhythmic like real laughter
-    [0, 0.17, 0.34, 0.52, 0.71, 0.91, 1.12].forEach((offset, i) => {
-      const freq = 260 + i * 14;
-      const osc  = ctx.createOscillator();
-      const gain = ctx.createGain();
-      const osc2 = ctx.createOscillator(); // harmonic layer for richness
-      const g2   = ctx.createGain();
-      osc.connect(gain);  gain.connect(ctx.destination);
-      osc2.connect(g2);   g2.connect(ctx.destination);
-      osc.type  = 'sawtooth'; osc.frequency.value = freq;
-      osc2.type = 'square';   osc2.frequency.value = freq * 2;
-      // Main burst envelope
-      gain.gain.setValueAtTime(0, t + offset);
-      gain.gain.linearRampToValueAtTime(0.26, t + offset + 0.025);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + offset + 0.14);
-      // Harmonic quieter
-      g2.gain.setValueAtTime(0, t + offset);
-      g2.gain.linearRampToValueAtTime(0.08, t + offset + 0.02);
-      g2.gain.exponentialRampToValueAtTime(0.001, t + offset + 0.1);
-      osc.start(t + offset);  osc.stop(t + offset + 0.18);
-      osc2.start(t + offset); osc2.stop(t + offset + 0.14);
-    });
-    setTimeout(() => { try { ctx.close(); } catch(e) {} }, 3500);
+    const audio = new Audio('johnwrich.mp3');
+    audio.play().catch(() => {});
   } catch(e) {}
 }
 
