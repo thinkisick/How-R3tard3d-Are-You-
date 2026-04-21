@@ -81,6 +81,18 @@ function hashStr(str) {
 function seededRand(seed, salt) { return hashStr(seed + salt); }
 function seededPick(seed, salt, arr) { return arr[Math.floor(seededRand(seed, salt) * arr.length)]; }
 
+// ── Scan text rotation ──
+const SCAN_MSGS = [
+  'Scanning your r3tard3d energy...',
+  'Checking on-chain activity...',
+  'Analyzing posting frequency...',
+  'Consulting the council of r3tards...',
+  'Calculating r3tardness...',
+  'Cross-referencing the rug pull database...',
+  'Measuring degen levels...',
+  'Almost done r3tard...',
+];
+
 // ── Content pools (random each time for virality) ──
 const TITLES   = ['Diamond Paws','Floor Goblin','Cope Machine','Unwashed Holder','NPC Destroyer','On-Chain Menace','Frog-Brained','Definitely Not Selling','Smoothbrain Supreme','Ape-In Protocol'];
 const ABILITIES = ['💎 Diamond Grip','🐸 Frog Brain Active','📉 Buy High Sell Never','🤝 Rug Accepted','🧠 Smoothbrain Mode','🎰 Ape In Protocol','💀 Still Not Selling','⛓️ On-Chain Forever','🔮 Cope and Hold','🤡 Trust the Vision'];
@@ -195,11 +207,21 @@ async function rateHandle() {
     return;
   }
 
+  // Rotate scan messages during the wait
+  const scanEl = document.querySelector('.scanning-text');
+  let scanMsgIdx = 0;
+  const scanInterval = setInterval(() => {
+    scanMsgIdx = (scanMsgIdx + 1) % SCAN_MSGS.length;
+    if (scanEl) scanEl.textContent = SCAN_MSGS[scanMsgIdx];
+  }, 900);
+
   // Run 5s delay and avatar fetch in parallel
   const [avatarB64] = await Promise.all([
     fetchAvatarBase64(handle),
     new Promise(res => setTimeout(res, 5000)),
   ]);
+  clearInterval(scanInterval);
+  if (scanEl) scanEl.textContent = SCAN_MSGS[0];
   currentAvatarB64 = avatarB64;
 
   const HALL_OF_FAME = ['thinkisick', 'dreiki10', 'exsay07'];
@@ -218,6 +240,7 @@ async function rateHandle() {
   history.replaceState(null, '', '?handle=' + encodeURIComponent(handle));
   addTickerEntry(handle, currentScore, currentTier.tier, currentRarity.id);
   addLeaderboardEntry(handle, currentScore, currentTier.tier, currentRarity.id);
+  updateCounter();
 
   prepareResult();
   showScreen('resultScreen');
@@ -250,6 +273,7 @@ function revealCard() {
     const topTiers = ['legendary', 'mythic', 'epic'];
     const snd = new Audio(topTiers.includes(currentRarity.id) ? 'r3tard alert.mp3' : 'r3tard3d.mp3');
     snd.play().catch(() => {});
+    if (currentRarity.id === 'legendary') launchConfetti();
     const overlay = document.getElementById('bgOverlay');
     overlay.style.background = RARITY_BG[currentRarity.id] || '';
     overlay.classList.add('visible');
@@ -418,6 +442,55 @@ function copyResult() {
   }
 }
 
+// ── Confetti ──
+function launchConfetti() {
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:9000;pointer-events:none;';
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+  const cols = ['#f59e0b','#fbbf24','#a855f7','#ec4899','#fff','#f97316','#34d399','#60a5fa'];
+  const particles = Array.from({ length: 140 }, () => ({
+    x:  canvas.width  * (0.25 + Math.random() * 0.5),
+    y:  canvas.height * 0.45,
+    vx: (Math.random() - 0.5) * 14,
+    vy: -9 - Math.random() * 9,
+    w:  5 + Math.random() * 9,
+    h:  4 + Math.random() * 5,
+    color: cols[Math.floor(Math.random() * cols.length)],
+    rot:  Math.random() * Math.PI * 2,
+    rotV: (Math.random() - 0.5) * 0.18,
+    alpha: 1,
+  }));
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      p.vy += 0.28; p.vx *= 0.99;
+      p.rot += p.rotV; p.alpha -= 0.007;
+      if (p.alpha > 0) {
+        alive = true;
+        ctx.save();
+        ctx.globalAlpha = p.alpha;
+        ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        ctx.restore();
+      }
+    });
+    if (alive) requestAnimationFrame(animate); else canvas.remove();
+  }
+  animate();
+}
+
+// ── Counter ──
+function updateCounter() {
+  const el = document.getElementById('scanCounter');
+  if (el) el.textContent = (4806 + lbData.length).toLocaleString() + ' degens rated';
+}
+
 // ── Ticker ──
 const TICKER_RARITY_COLOR = {
   legendary: '#f59e0b', mythic: '#ec4899', epic: '#f97316',
@@ -512,6 +585,7 @@ function renderLeaderboard(highlightHandle) {
 // ── Init ──
 spawnFaces();
 renderTicker();
+updateCounter();
 
 // Auto-scan from ?handle=xxx shareable URL
 (function () {

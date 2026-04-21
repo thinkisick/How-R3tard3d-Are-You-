@@ -176,7 +176,8 @@ body {
 .btn-rate:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
 .btn-face-icon { width: 28px; height: auto; filter: drop-shadow(0 1px 3px rgba(0,0,0,0.3)); }
 
-.input-hint { font-size: 0.78rem; color: rgba(255,255,255,0.4); margin-bottom: 0; }
+.input-hint { font-size: 0.78rem; color: rgba(255,255,255,0.4); margin-bottom: 2px; }
+.scan-counter { font-size: 0.7rem; color: rgba(255,255,255,0.28); font-family: 'Share Tech Mono', monospace; margin-bottom: 0; }
 
 /* ── Scanning ── */
 .scanning-block {
@@ -230,6 +231,14 @@ body {
 .card-flip-front { transform: rotateY(180deg); }
 
 /* Reveal back face */
+@keyframes cardBob {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+@keyframes hintBounce {
+  0%, 100% { transform: translateY(0); opacity: 0.45; }
+  50%       { transform: translateY(6px); opacity: 1; }
+}
 .reveal-back {
   background: linear-gradient(135deg, #3D1A70 0%, #1a0840 100%);
   border: 2px solid rgba(168,85,247,0.4);
@@ -237,11 +246,15 @@ body {
   min-height: 560px;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
   box-shadow: 0 0 40px rgba(168,85,247,0.3), 0 16px 48px rgba(0,0,0,0.5);
-  transition: transform 0.15s, box-shadow 0.15s;
+  animation: cardBob 2.8s ease-in-out infinite;
 }
 .card-flip-back:hover .reveal-back {
-  transform: scale(1.01);
   box-shadow: 0 0 60px rgba(168,85,247,0.5), 0 20px 60px rgba(0,0,0,0.6);
+}
+.reveal-hint {
+  font-size: 1.1rem; color: rgba(168,85,247,0.7);
+  animation: hintBounce 1.3s ease-in-out infinite;
+  line-height: 1;
 }
 .reveal-face {
   width: 110px; height: auto;
