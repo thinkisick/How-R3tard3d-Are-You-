@@ -174,6 +174,8 @@ function prepareResult() {
   const inner = document.getElementById('cardFlipInner');
   inner.style.transition = 'none';       // instant reset (no animation when re-entering)
   inner.classList.remove('flipped');
+  // Restore back-face visibility for the next reveal
+  document.querySelector('.card-flip-back').style.visibility = '';
   document.getElementById('cardFlipScene').classList.remove('hidden');
   document.getElementById('shareButtons').classList.add('hidden');
   document.getElementById('retryBtn').classList.add('hidden');
@@ -183,6 +185,9 @@ function prepareResult() {
 // Tap — 3D flip the card over, then show share buttons
 function revealCard() {
   const inner = document.getElementById('cardFlipInner');
+  // Immediately hide back-face content so it can't bleed through during the flip
+  // on mobile browsers where backface-visibility: hidden is unreliable
+  document.querySelector('.card-flip-back').style.visibility = 'hidden';
   inner.style.transition = 'transform 0.75s cubic-bezier(0.4,0.2,0.2,1)';
   inner.classList.add('flipped');
   setTimeout(() => {
