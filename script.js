@@ -217,6 +217,7 @@ async function rateHandle() {
 
   history.replaceState(null, '', '?handle=' + encodeURIComponent(handle));
   addTickerEntry(handle, currentScore, currentTier.tier, currentRarity.id);
+  addLeaderboardEntry(handle, currentScore, currentTier.tier, currentRarity.id);
 
   prepareResult();
   showScreen('resultScreen');
@@ -234,6 +235,7 @@ function prepareResult() {
   document.getElementById('shareButtons').classList.add('hidden');
   document.getElementById('retryBtn').classList.add('hidden');
   document.getElementById('resultDisclaimer').classList.add('hidden');
+  document.getElementById('leaderboardSection').classList.add('hidden');
 }
 
 // Tap — 3D flip the card over, then show share buttons
@@ -254,6 +256,8 @@ function revealCard() {
     document.getElementById('shareButtons').classList.remove('hidden');
     document.getElementById('retryBtn').classList.remove('hidden');
     document.getElementById('resultDisclaimer').classList.remove('hidden');
+    renderLeaderboard(currentHandle);
+    document.getElementById('leaderboardSection').classList.remove('hidden');
   }, 750);
 }
 
@@ -321,6 +325,7 @@ function spawnParticles(active) {
 function goHome() {
   document.getElementById('bgOverlay').classList.remove('visible');
   document.getElementById('cardFlipScene').classList.add('hidden');
+  document.getElementById('leaderboardSection').classList.add('hidden');
   history.replaceState(null, '', location.pathname);
   showScreen('homeScreen');
 }
@@ -449,6 +454,59 @@ function renderTicker() {
   track.offsetWidth;
   const dur = Math.max(25, tickerEntries.length * 3.5);
   track.style.animation = `tickerScroll ${dur}s linear infinite`;
+}
+
+// ── Leaderboard ──
+const LB_KEY = 'r3tard_lb_v1';
+const LB_COLOR = { legendary:'#f59e0b', mythic:'#ec4899', epic:'#f97316', rare:'#818cf8', common:'#a78bfa', secret:'#94a3b8' };
+
+function seedLb() {
+  const hof = ['thinkisick','dreiki10','exsay07'].map((h, i) => ({
+    handle: h, score: 100, tier: 'LEGENDARY R3TARD', rarity: 'legendary', ts: i,
+  }));
+  const rest = TICKER_SEED.map((h, i) => {
+    const score  = Math.round(seededRand(h, 'main') * 100);
+    const tier   = TIERS.find(t => score >= t.min && score <= t.max) || TIERS[TIERS.length-1];
+    const rarity = RARITIES.find(r => score >= r.min && score <= r.max) || RARITIES[RARITIES.length-1];
+    return { handle: h, score, tier: tier.tier, rarity: rarity.id, ts: i + 10 };
+  });
+  return [...hof, ...rest].sort((a, b) => b.score - a.score);
+}
+
+let lbData = [];
+try { lbData = JSON.parse(localStorage.getItem(LB_KEY)) || seedLb(); }
+catch(e) { lbData = seedLb(); }
+
+function addLeaderboardEntry(handle, score, tier, rarity) {
+  lbData = lbData.filter(e => e.handle.toLowerCase() !== handle.toLowerCase());
+  lbData.push({ handle, score, tier, rarity, ts: Date.now() });
+  lbData.sort((a, b) => b.score - a.score);
+  if (lbData.length > 60) lbData = lbData.slice(0, 60);
+  try { localStorage.setItem(LB_KEY, JSON.stringify(lbData)); } catch(e) {}
+}
+
+function renderLeaderboard(highlightHandle) {
+  const list  = document.getElementById('lbList');
+  const count = document.getElementById('lbCount');
+  if (count) count.textContent = lbData.length + ' degens rated';
+  if (!list) return;
+  list.innerHTML = '';
+  lbData.forEach((entry, i) => {
+    const rank  = i + 1;
+    const sym   = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+    const rc    = rank === 1 ? 'lb-rank-gold' : rank === 2 ? 'lb-rank-silver' : rank === 3 ? 'lb-rank-bronze' : '';
+    const color = LB_COLOR[entry.rarity] || '#a78bfa';
+    const isNew = highlightHandle && entry.handle.toLowerCase() === highlightHandle.toLowerCase();
+    const el = document.createElement('div');
+    el.className = 'lb-entry' + (isNew ? ' lb-entry-new' : '');
+    el.style.borderLeftColor = color;
+    el.innerHTML =
+      `<span class="lb-rank ${rc}">${sym}</span>` +
+      `<span class="lb-handle">@${entry.handle}</span>` +
+      `<span class="lb-score" style="color:${color}">${entry.score}%</span>` +
+      `<span class="lb-tier">${entry.tier}</span>`;
+    list.appendChild(el);
+  });
 }
 
 // ── Init ──

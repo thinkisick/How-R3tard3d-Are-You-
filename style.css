@@ -552,6 +552,63 @@ body {
 .disclaimer a:hover { color: #fff; }
 .home-disclaimer { margin-top: 32px; text-align: center; width: 100%; max-width: 100%; }
 
+/* ── Leaderboard ── */
+.leaderboard-section {
+  width: 100%; max-width: 480px;
+  margin: 6px 0 100px;
+}
+.lb-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px; padding: 0 2px;
+}
+.lb-title {
+  font-size: 1rem; font-weight: 900; letter-spacing: 1.5px;
+  text-transform: uppercase; color: #fff;
+}
+.lb-count {
+  font-size: 0.68rem; color: rgba(255,255,255,0.38);
+  font-family: 'Share Tech Mono', monospace;
+}
+.lb-list {
+  display: flex; flex-direction: column; gap: 5px;
+  max-height: 440px; overflow-y: auto;
+  scrollbar-width: thin; scrollbar-color: rgba(168,85,247,0.4) transparent;
+}
+.lb-list::-webkit-scrollbar { width: 3px; }
+.lb-list::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.35); border-radius: 2px; }
+.lb-entry {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-left: 3px solid #a78bfa;
+  border-radius: 12px; padding: 9px 14px;
+}
+@keyframes lbFlash {
+  0%   { background: rgba(168,85,247,0.28); box-shadow: 0 0 18px rgba(168,85,247,0.35); }
+  100% { background: rgba(255,255,255,0.05); box-shadow: none; }
+}
+.lb-entry-new { animation: lbFlash 2.5s ease-out forwards; }
+.lb-rank {
+  font-size: 0.85rem; font-weight: 900; min-width: 28px;
+  text-align: center; color: rgba(255,255,255,0.3); flex-shrink: 0;
+}
+.lb-rank-gold   { color: #f59e0b; }
+.lb-rank-silver { color: #94a3b8; }
+.lb-rank-bronze { color: #cd7c3a; }
+.lb-handle {
+  flex: 1; font-size: 0.85rem; font-weight: 700; color: #fff;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.lb-score {
+  font-size: 0.88rem; font-weight: 900; flex-shrink: 0;
+}
+.lb-tier {
+  font-size: 0.58rem; color: rgba(255,255,255,0.32);
+  font-family: 'Share Tech Mono', monospace;
+  white-space: nowrap; max-width: 90px;
+  overflow: hidden; text-overflow: ellipsis; flex-shrink: 0;
+}
+
 /* ── Ticker ── */
 .ticker-wrap {
   position: fixed; bottom: 44px; left: 0; right: 0;
