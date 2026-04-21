@@ -19,6 +19,15 @@
     </div>
   </div>
 
+  <!-- How To Improve Popup -->
+  <div class="popup-overlay" id="improvePopupOverlay">
+    <div class="popup-box improve-popup-box">
+      <img src="mainwebsite.png" class="improve-popup-img" alt="">
+      <p class="improve-popup-text">Just B3 Yours3lf R3tard!</p>
+      <button onclick="closeImprovePopup()">got it</button>
+    </div>
+  </div>
+
   <!-- HOME SCREEN -->
   <div class="screen" id="homeScreen">
     <div class="hero">
@@ -117,6 +126,7 @@
       <button class="btn-share btn-download" onclick="downloadCard()">⬇ Download Card</button>
       <button class="btn-share btn-twitter" onclick="shareTwitter()">𝕏 Share on Twitter</button>
       <button class="btn-share btn-copy" onclick="copyResult()">📋 Copy</button>
+      <button class="btn-share btn-improve" onclick="openImprovePopup()">How To Improve</button>
     </div>
     <button class="btn-retry hidden" id="retryBtn" onclick="goHome()">← Try Another Handle</button>
     <p class="disclaimer hidden" id="resultDisclaimer">

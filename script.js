@@ -40,6 +40,12 @@ document.getElementById('popupOverlay').addEventListener('click', function(e) {
   if (e.target === this) closePopup();
 });
 
+function openImprovePopup() { document.getElementById('improvePopupOverlay').classList.add('active'); }
+function closeImprovePopup() { document.getElementById('improvePopupOverlay').classList.remove('active'); }
+document.getElementById('improvePopupOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeImprovePopup();
+});
+
 // ── Hash / seeded random ──
 function hashStr(str) {
   let h = 2166136261;
