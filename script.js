@@ -261,6 +261,9 @@ function goHome() {
 function showScreen(id) {
   ['homeScreen','resultScreen'].forEach(s =>
     document.getElementById(s).classList.toggle('hidden', s !== id));
+  // Hide floating faces on result screen — they cover the card on mobile
+  document.getElementById('facesContainer').style.display =
+    id === 'homeScreen' ? '' : 'none';
 }
 
 // ── Input listeners ──
