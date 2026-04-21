@@ -622,35 +622,6 @@ body {
   overflow: hidden; text-overflow: ellipsis; flex-shrink: 0;
 }
 
-/* ── Ticker ── */
-.ticker-wrap {
-  position: fixed; bottom: 44px; left: 0; right: 0;
-  z-index: 22; overflow: hidden; pointer-events: none;
-  padding: 5px 0;
-  background: rgba(0,0,0,0.2);
-  backdrop-filter: blur(6px);
-  border-top: 1px solid rgba(255,255,255,0.06);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-.ticker-track {
-  display: flex; align-items: center;
-  width: max-content;
-  animation: tickerScroll 40s linear infinite;
-  will-change: transform;
-}
-@keyframes tickerScroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-.ticker-item {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 0 18px; white-space: nowrap;
-  font-size: 0.7rem; font-family: 'Share Tech Mono', monospace;
-  color: rgba(255,255,255,0.45);
-}
-.ticker-handle { color: rgba(255,255,255,0.8); }
-.ticker-sep { color: rgba(255,255,255,0.18); padding: 0 2px; }
-
 /* ── Footer ── */
 .footer {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 20;

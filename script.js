@@ -106,22 +106,21 @@ function randPick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
 // ── Rarity system ──
 const RARITIES = [
-  { id: 'legendary', min: 100, max: 100, label: '✦ NEVER SELLING ✦'     },
-  { id: 'mythic',    min: 90,  max: 99,  label: '✦ BASED ✦'             },
-  { id: 'epic',      min: 70,  max: 89,  label: '✦ DEGEN ✦'             },
-  { id: 'rare',      min: 40,  max: 69,  label: '✦ RARE ✦'              },
-  { id: 'common',    min: 10,  max: 39,  label: '✦ COMMON ✦'            },
+  { id: 'legendary', min: 95,  max: 100, label: '✦ NEVER SELLING ✦'     },
+  { id: 'mythic',    min: 80,  max: 94,  label: '✦ BASED ✦'             },
+  { id: 'epic',      min: 60,  max: 79,  label: '✦ DEGEN ✦'             },
+  { id: 'rare',      min: 35,  max: 59,  label: '✦ RARE ✦'              },
+  { id: 'common',    min: 10,  max: 34,  label: '✦ COMMON ✦'            },
   { id: 'secret',    min: 0,   max: 9,   label: '? FLOOR IS A FEELING ?' },
 ];
 
 const TIERS = [
-  { min: 0,   max: 19,  tier: 'j33t',                  desc: "Sold at the bottom. Blocked by the community." },
-  { min: 20,  max: 39,  tier: 'Paper Hands',            desc: "Would fold at the first red candle." },
-  { min: 40,  max: 59,  tier: 'R3tard',                 desc: "Officially one of us. Occasionally unhinged." },
-  { min: 60,  max: 74,  tier: 'Certified Degen',        desc: "Made choices. No regrets. Respectable." },
-  { min: 75,  max: 89,  tier: 'Elite R3tard',           desc: "Doctors cannot explain your risk tolerance." },
-  { min: 90,  max: 99,  tier: 'Diamond Hand R3tard',    desc: "Held through everything. Absolute unit." },
-  { min: 100, max: 100, tier: 'LEGENDARY R3TARD',       desc: "Never sold. Never will. You are the art." },
+  { min: 0,   max: 14,  tier: 'j33t',                  desc: "Sold at the bottom. Blocked by the community." },
+  { min: 15,  max: 34,  tier: 'Paper Hands',            desc: "Would fold at the first red candle." },
+  { min: 35,  max: 59,  tier: 'R3tard',                 desc: "Officially one of us. Occasionally unhinged." },
+  { min: 60,  max: 79,  tier: 'Certified Degen',        desc: "Made choices. No regrets. Respectable." },
+  { min: 80,  max: 94,  tier: 'Diamond Hand R3tard',    desc: "Held through everything. Absolute unit." },
+  { min: 95,  max: 100, tier: 'LEGENDARY R3TARD',       desc: "Never sold. Never will. You are the art." },
 ];
 
 const STATS = [
@@ -225,7 +224,7 @@ async function rateHandle() {
   currentAvatarB64 = avatarB64;
 
   const HALL_OF_FAME = ['thinkisick', 'dreiki10', 'exsay07'];
-  currentScore   = HALL_OF_FAME.includes(seed) ? 100 : Math.round(seededRand(seed, 'main') * 100);
+  currentScore   = HALL_OF_FAME.includes(seed) ? 100 : Math.round(Math.pow(seededRand(seed, 'main'), 0.6) * 100);
   currentTier    = TIERS.find(t => currentScore >= t.min && currentScore <= t.max) || TIERS[TIERS.length - 1];
   currentRarity  = RARITIES.find(r => currentScore >= r.min && currentScore <= r.max) || RARITIES[RARITIES.length - 1];
   currentTitle   = randPick(TITLES);
@@ -237,7 +236,6 @@ async function rateHandle() {
   btn.innerHTML = `Rate me <img src="${FACE_IMG}" class="btn-face-icon" alt="">`;
   document.getElementById('scanningBlock').classList.add('hidden');
 
-  addTickerEntry(handle, currentScore, currentTier.tier, currentRarity.id);
   addLeaderboardEntry(handle, currentScore, currentTier.tier, currentRarity.id);
   updateCounter();
 
@@ -356,7 +354,6 @@ function showScreen(id) {
     document.getElementById(s).classList.toggle('hidden', s !== id));
   const isHome = id === 'homeScreen';
   document.getElementById('facesContainer').style.display = isHome ? '' : 'none';
-  document.getElementById('tickerWrap').style.display = isHome ? '' : 'none';
 }
 
 // ── Input listeners ──
@@ -488,43 +485,9 @@ function updateCounter() {
   if (el) el.textContent = (4806 + lbData.length).toLocaleString() + ' degens rated';
 }
 
-// ── Ticker ──
-const TICKER_RARITY_COLOR = {
-  legendary: '#f59e0b', mythic: '#ec4899', epic: '#f97316',
-  rare: '#818cf8', common: '#a78bfa', secret: '#94a3b8',
-};
-
 const TICKER_SEED = ['floor_goblin','degen_monk','wagmi_never','paperhands_pete',
   'rugged_again','frog_maxi','gm_gm_gm','diamond_ape','npc_slayer',
   'cope_machine','smoothbrain','rug_survivor'];
-
-const tickerEntries = TICKER_SEED.map(h => {
-  const score  = Math.round(seededRand(h, 'main') * 100);
-  const tier   = TIERS.find(t => score >= t.min && score <= t.max) || TIERS[TIERS.length - 1];
-  const rarity = RARITIES.find(r => score >= r.min && score <= r.max) || RARITIES[RARITIES.length - 1];
-  return { handle: h, score, tier: tier.tier, rarity: rarity.id };
-});
-
-function addTickerEntry(handle, score, tier, rarity) {
-  tickerEntries.unshift({ handle, score, tier, rarity });
-  renderTicker();
-}
-
-function renderTicker() {
-  const track = document.getElementById('tickerTrack');
-  const html = tickerEntries.map(e =>
-    `<span class="ticker-item">` +
-    `<span class="ticker-handle">@${e.handle}</span>` +
-    ` — <span style="color:${TICKER_RARITY_COLOR[e.rarity]||'#a78bfa'}">${e.score}%</span>` +
-    ` · ${e.tier}` +
-    `</span><span class="ticker-sep">✦</span>`
-  ).join('');
-  track.innerHTML = html + html;
-  track.style.animation = 'none';
-  track.offsetWidth;
-  const dur = Math.max(25, tickerEntries.length * 3.5);
-  track.style.animation = `tickerScroll ${dur}s linear infinite`;
-}
 
 // ── Leaderboard ──
 const LB_KEY = 'r3tard_lb_v1';
@@ -581,6 +544,5 @@ function renderLeaderboard(highlightHandle) {
 
 // ── Init ──
 spawnFaces();
-renderTicker();
 updateCounter();
 
