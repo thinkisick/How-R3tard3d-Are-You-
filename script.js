@@ -1,6 +1,6 @@
 'use strict';
 
-const FACE_IMG = 'face.png';
+const FACE_IMG = 'Pictures/face.png';
 
 // ── Floating faces ──
 const FACE_SLOTS = [
@@ -42,7 +42,7 @@ function spawnFaces() {
 
 function showPopup() {
   document.getElementById('popupFace').innerHTML =
-    `<img src="donottouchitr3tard.png" style="width:100%;max-width:280px;border-radius:16px;">`;
+    `<img src="Pictures/donottouchitr3tard.png" style="width:100%;max-width:280px;border-radius:16px;">`;
   document.getElementById('popupOverlay').classList.add('active');
 }
 function closePopup() { document.getElementById('popupOverlay').classList.remove('active'); }
@@ -58,7 +58,7 @@ document.getElementById('improvePopupOverlay').addEventListener('click', functio
 
 function playLaughSound() {
   try {
-    const audio = new Audio('johnwrich.mp3');
+    const audio = new Audio('Sounds/johnwrich.mp3');
     audio.play().catch(() => {});
   } catch(e) {}
 }
@@ -268,7 +268,7 @@ function revealCard() {
   setTimeout(() => {
     if (navigator.vibrate) navigator.vibrate([50, 30, 100]);
     const topTiers = ['legendary', 'mythic', 'epic'];
-    const snd = new Audio(topTiers.includes(currentRarity.id) ? 'r3tard alert.mp3' : 'r3tard3d.mp3');
+    const snd = new Audio(topTiers.includes(currentRarity.id) ? 'Sounds/r3tard alert.mp3' : 'Sounds/r3tard3d.mp3');
     snd.play().catch(() => {});
     const overlay = document.getElementById('bgOverlay');
     overlay.style.background = RARITY_BG[currentRarity.id] || '';
