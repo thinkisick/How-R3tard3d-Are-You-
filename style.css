@@ -377,12 +377,13 @@ body {
 .rarity-secret    .pkm-img-wrap { background: linear-gradient(135deg, #64748b, #e2e8f0); }
 
 .pkm-img-box {
-  width: 100%; aspect-ratio: 4 / 3;
+  width: 100%; aspect-ratio: 3 / 2;
   border-radius: 8px; overflow: hidden;
   background: rgba(5,2,15,0.8);
   display: flex; align-items: center; justify-content: center;
 }
-.pkm-img-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* object-fit: contain keeps avatar proportions; cover would squish square photos */
+.pkm-img-box img { width: 100%; height: 100%; object-fit: contain; display: block; }
 
 /* Caption strip */
 .pkm-caption {

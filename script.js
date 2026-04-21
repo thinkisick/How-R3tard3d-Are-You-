@@ -103,10 +103,11 @@ let currentFlavor    = '';
 // Load avatar via wsrv.nl proxy (has CORS headers) → canvas → base64
 function fetchAvatarBase64(handle) {
   const encoded = encodeURIComponent(handle);
+  // Request at 400px — canvas drawn at 400×400 so download quality is sharp
   const candidates = [
-    `https://wsrv.nl/?url=unavatar.io%2Fx%2F${encoded}&w=200&h=200&fit=cover&output=jpg`,
-    `https://wsrv.nl/?url=unavatar.io%2Ftwitter%2F${encoded}&w=200&h=200&fit=cover&output=jpg`,
-    `https://wsrv.nl/?url=unavatar.io%2Fx%2F${encoded}&w=200&h=200&output=png`,
+    `https://wsrv.nl/?url=unavatar.io%2Fx%2F${encoded}&w=400&h=400&fit=cover&output=jpg`,
+    `https://wsrv.nl/?url=unavatar.io%2Ftwitter%2F${encoded}&w=400&h=400&fit=cover&output=jpg`,
+    `https://wsrv.nl/?url=unavatar.io%2Fx%2F${encoded}&w=400&h=400&output=png`,
   ];
   function tryNext(i) {
     if (i >= candidates.length) return Promise.resolve(null);
@@ -116,9 +117,11 @@ function fetchAvatarBase64(handle) {
       img.onload = () => {
         try {
           const c = document.createElement('canvas');
-          c.width = c.height = 200;
-          c.getContext('2d').drawImage(img, 0, 0, 200, 200);
-          resolve(c.toDataURL('image/jpeg', 0.92));
+          // Draw at native size to avoid upscale blur
+          c.width = img.naturalWidth || 400;
+          c.height = img.naturalHeight || 400;
+          c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+          resolve(c.toDataURL('image/jpeg', 0.95));
         } catch { resolve(tryNext(i + 1)); }
       };
       img.onerror = () => resolve(tryNext(i + 1));
@@ -148,7 +151,7 @@ async function rateHandle() {
   ]);
   currentAvatarB64 = avatarB64;
 
-  const HALL_OF_FAME = ['thinkisick', 'dreiki10'];
+  const HALL_OF_FAME = ['thinkisick', 'dreiki10', 'exsay07'];
   currentScore   = HALL_OF_FAME.includes(seed) ? 100 : Math.round(seededRand(seed, 'main') * 100);
   currentTier    = TIERS.find(t => currentScore >= t.min && currentScore <= t.max) || TIERS[TIERS.length - 1];
   currentRarity  = RARITIES.find(r => currentScore >= r.min && currentScore <= r.max) || RARITIES[RARITIES.length - 1];
@@ -323,7 +326,7 @@ async function downloadCard() {
 // ── Share / Copy ──
 function shareTwitter() {
   const text = encodeURIComponent(
-    `I got ${currentScore}% — ${currentTitle} (${currentTier.tier}) ${currentFlavor}\n\nHow R3tard3d are you?`
+    `I got ${currentScore}% — ${currentTitle} (${currentTier.tier}) ${currentFlavor}\n\nHow R3tard3d are you? 👉 https://r3tard3dscore.vercel.app/`
   );
   window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
 }
