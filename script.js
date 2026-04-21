@@ -71,13 +71,13 @@ const RARITIES = [
 ];
 
 const TIERS = [
-  { min: 0,   max: 19,  tier: 'Normie Behavior',   desc: "Suspiciously functional. Touch dirt." },
-  { min: 20,  max: 39,  tier: 'Paper Hands',        desc: "Would fold at the first red candle." },
-  { min: 40,  max: 59,  tier: 'Mild Degen',         desc: "Occasionally unhinged. Has potential." },
-  { min: 60,  max: 74,  tier: 'Certified Degen',    desc: "Made choices. No regrets. Respectable." },
-  { min: 75,  max: 89,  tier: 'Elite R3tard',       desc: "Doctors cannot explain your risk tolerance." },
-  { min: 90,  max: 99,  tier: 'GOD-TIER',           desc: "You bought the top and called it a W." },
-  { min: 100, max: 100, tier: 'LEGENDARY R3TARD',   desc: "Never sold. Never will. You are the art." },
+  { min: 0,   max: 19,  tier: 'j33t',                  desc: "Sold at the bottom. Blocked by the community." },
+  { min: 20,  max: 39,  tier: 'Paper Hands',            desc: "Would fold at the first red candle." },
+  { min: 40,  max: 59,  tier: 'R3tard',                 desc: "Officially one of us. Occasionally unhinged." },
+  { min: 60,  max: 74,  tier: 'Certified Degen',        desc: "Made choices. No regrets. Respectable." },
+  { min: 75,  max: 89,  tier: 'Elite R3tard',           desc: "Doctors cannot explain your risk tolerance." },
+  { min: 90,  max: 99,  tier: 'Diamond Hand R3tard',    desc: "Held through everything. Absolute unit." },
+  { min: 100, max: 100, tier: 'LEGENDARY R3TARD',       desc: "Never sold. Never will. You are the art." },
 ];
 
 const STATS = [
