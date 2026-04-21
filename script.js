@@ -273,7 +273,6 @@ function revealCard() {
     const topTiers = ['legendary', 'mythic', 'epic'];
     const snd = new Audio(topTiers.includes(currentRarity.id) ? 'r3tard alert.mp3' : 'r3tard3d.mp3');
     snd.play().catch(() => {});
-    if (currentRarity.id === 'legendary') launchConfetti();
     const overlay = document.getElementById('bgOverlay');
     overlay.style.background = RARITY_BG[currentRarity.id] || '';
     overlay.classList.add('visible');
@@ -561,7 +560,7 @@ function addLeaderboardEntry(handle, score, tier, rarity) {
 function renderLeaderboard(highlightHandle) {
   const list  = document.getElementById('lbList');
   const count = document.getElementById('lbCount');
-  if (count) count.textContent = lbData.length + ' degens rated';
+  if (count) count.textContent = lbData.length + ' r3tards rated';
   if (!list) return;
   list.innerHTML = '';
   lbData.forEach((entry, i) => {
