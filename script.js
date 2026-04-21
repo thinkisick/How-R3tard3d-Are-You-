@@ -237,7 +237,6 @@ async function rateHandle() {
   btn.innerHTML = `Rate me <img src="${FACE_IMG}" class="btn-face-icon" alt="">`;
   document.getElementById('scanningBlock').classList.add('hidden');
 
-  history.replaceState(null, '', '?handle=' + encodeURIComponent(handle));
   addTickerEntry(handle, currentScore, currentTier.tier, currentRarity.id);
   addLeaderboardEntry(handle, currentScore, currentTier.tier, currentRarity.id);
   updateCounter();
@@ -349,7 +348,6 @@ function goHome() {
   document.getElementById('bgOverlay').classList.remove('visible');
   document.getElementById('cardFlipScene').classList.add('hidden');
   document.getElementById('leaderboardSection').classList.add('hidden');
-  history.replaceState(null, '', location.pathname);
   showScreen('homeScreen');
 }
 
@@ -586,13 +584,3 @@ spawnFaces();
 renderTicker();
 updateCounter();
 
-// Auto-scan from ?handle=xxx shareable URL
-(function () {
-  const h = new URLSearchParams(location.search).get('handle');
-  if (h) {
-    const inp = document.getElementById('handleInput');
-    inp.value = h;
-    inp.dispatchEvent(new Event('input'));
-    rateHandle();
-  }
-}());
