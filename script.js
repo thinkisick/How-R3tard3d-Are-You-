@@ -95,6 +95,15 @@ const STATS = [
   { key: 'nft',        label: 'Rug Pull Survivor',  fmt: p => p + '%' },
 ];
 
+const RARITY_BG = {
+  legendary: 'radial-gradient(ellipse at 50% 40%, rgba(245,158,11,0.22) 0%, rgba(168,85,247,0.18) 55%, transparent 80%)',
+  mythic:    'radial-gradient(ellipse at 50% 40%, rgba(236,72,153,0.22) 0%, rgba(168,85,247,0.18) 55%, transparent 80%)',
+  epic:      'radial-gradient(ellipse at 50% 40%, rgba(249,115,22,0.2) 0%, rgba(236,72,153,0.15) 55%, transparent 80%)',
+  rare:      'radial-gradient(ellipse at 50% 40%, rgba(99,102,241,0.22) 0%, rgba(59,130,246,0.14) 55%, transparent 80%)',
+  common:    'radial-gradient(ellipse at 50% 40%, rgba(155,109,208,0.1) 0%, transparent 80%)',
+  secret:    'radial-gradient(ellipse at 50% 40%, rgba(100,116,139,0.22) 0%, rgba(30,58,95,0.18) 55%, transparent 80%)',
+};
+
 let currentHandle    = '';
 let currentScore     = 0;
 let currentTier      = null;
@@ -170,6 +179,9 @@ async function rateHandle() {
   btn.innerHTML = `Rate me <img src="${FACE_IMG}" class="btn-face-icon" alt="">`;
   document.getElementById('scanningBlock').classList.add('hidden');
 
+  history.replaceState(null, '', '?handle=' + encodeURIComponent(handle));
+  addTickerEntry(handle, currentScore, currentTier.tier, currentRarity.id);
+
   prepareResult();
   showScreen('resultScreen');
 }
@@ -191,12 +203,15 @@ function prepareResult() {
 // Tap — 3D flip the card over, then show share buttons
 function revealCard() {
   const inner = document.getElementById('cardFlipInner');
-  // Immediately hide back-face content so it can't bleed through during the flip
-  // on mobile browsers where backface-visibility: hidden is unreliable
   document.querySelector('.card-flip-back').style.visibility = 'hidden';
+  if (navigator.vibrate) navigator.vibrate(20);
   inner.style.transition = 'transform 0.75s cubic-bezier(0.4,0.2,0.2,1)';
   inner.classList.add('flipped');
   setTimeout(() => {
+    if (navigator.vibrate) navigator.vibrate([50, 30, 100]);
+    const overlay = document.getElementById('bgOverlay');
+    overlay.style.background = RARITY_BG[currentRarity.id] || '';
+    overlay.classList.add('visible');
     document.getElementById('shareButtons').classList.remove('hidden');
     document.getElementById('retryBtn').classList.remove('hidden');
     document.getElementById('resultDisclaimer').classList.remove('hidden');
@@ -265,7 +280,9 @@ function spawnParticles(active) {
 }
 
 function goHome() {
+  document.getElementById('bgOverlay').classList.remove('visible');
   document.getElementById('cardFlipScene').classList.add('hidden');
+  history.replaceState(null, '', location.pathname);
   showScreen('homeScreen');
 }
 
@@ -357,5 +374,55 @@ function copyResult() {
   }
 }
 
+// ── Ticker ──
+const TICKER_RARITY_COLOR = {
+  legendary: '#f59e0b', mythic: '#ec4899', epic: '#f97316',
+  rare: '#818cf8', common: '#a78bfa', secret: '#94a3b8',
+};
+
+const TICKER_SEED = ['floor_goblin','degen_monk','wagmi_never','paperhands_pete',
+  'rugged_again','frog_maxi','gm_gm_gm','diamond_ape','npc_slayer',
+  'cope_machine','smoothbrain','rug_survivor'];
+
+const tickerEntries = TICKER_SEED.map(h => {
+  const score  = Math.round(seededRand(h, 'main') * 100);
+  const tier   = TIERS.find(t => score >= t.min && score <= t.max) || TIERS[TIERS.length - 1];
+  const rarity = RARITIES.find(r => score >= r.min && score <= r.max) || RARITIES[RARITIES.length - 1];
+  return { handle: h, score, tier: tier.tier, rarity: rarity.id };
+});
+
+function addTickerEntry(handle, score, tier, rarity) {
+  tickerEntries.unshift({ handle, score, tier, rarity });
+  renderTicker();
+}
+
+function renderTicker() {
+  const track = document.getElementById('tickerTrack');
+  const html = tickerEntries.map(e =>
+    `<span class="ticker-item">` +
+    `<span class="ticker-handle">@${e.handle}</span>` +
+    ` — <span style="color:${TICKER_RARITY_COLOR[e.rarity]||'#a78bfa'}">${e.score}%</span>` +
+    ` · ${e.tier}` +
+    `</span><span class="ticker-sep">✦</span>`
+  ).join('');
+  track.innerHTML = html + html;
+  track.style.animation = 'none';
+  track.offsetWidth;
+  const dur = Math.max(25, tickerEntries.length * 3.5);
+  track.style.animation = `tickerScroll ${dur}s linear infinite`;
+}
+
 // ── Init ──
 spawnFaces();
+renderTicker();
+
+// Auto-scan from ?handle=xxx shareable URL
+(function () {
+  const h = new URLSearchParams(location.search).get('handle');
+  if (h) {
+    const inp = document.getElementById('handleInput');
+    inp.value = h;
+    inp.dispatchEvent(new Event('input'));
+    rateHandle();
+  }
+}());
