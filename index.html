@@ -47,18 +47,22 @@
   <!-- RESULT SCREEN -->
   <div class="screen hidden" id="resultScreen">
 
-    <!-- Tap to reveal overlay (shown first) -->
-    <div class="reveal-overlay" id="revealOverlay" onclick="revealCard()">
-      <div class="reveal-back">
-        <img src="face.png" class="reveal-face" alt="">
-        <p class="reveal-text">Tap to reveal your card</p>
-      </div>
-    </div>
+    <!-- Flip scene: back = reveal, front = loot card -->
+    <div class="card-flip-scene hidden" id="cardFlipScene">
+      <div class="card-flip-inner" id="cardFlipInner">
 
-    <!-- Loot drop card (hidden until reveal) -->
-    <div class="card-drop-wrap hidden" id="cardDropWrap">
-      <div class="card-border-spin" id="cardBorderSpin"></div>
-      <div class="loot-card" id="resultCard">
+        <!-- Back face: tap to reveal -->
+        <div class="card-flip-back" onclick="revealCard()">
+          <div class="reveal-back">
+            <img src="face.png" class="reveal-face" alt="">
+            <p class="reveal-text">Tap to reveal your card</p>
+          </div>
+        </div>
+
+        <!-- Front face: loot card -->
+        <div class="card-flip-front" id="cardDropWrap">
+          <div class="card-border-spin" id="cardBorderSpin"></div>
+          <div class="loot-card" id="resultCard">
         <div class="card-particles" id="cardParticles"></div>
 
         <!-- Header: name + score (like Pokémon name + HP) -->
@@ -102,9 +106,12 @@
         <div class="pkm-footer">
           <span class="pkm-flavor" id="cardFlavor"></span>
           <span class="pkm-rarity" id="cardRarityBar"></span>
-        </div>
-      </div>
-    </div>
+        </div><!-- /pkm-footer -->
+          </div><!-- /loot-card #resultCard -->
+        </div><!-- /card-flip-front #cardDropWrap -->
+
+      </div><!-- /card-flip-inner -->
+    </div><!-- /card-flip-scene -->
 
     <div class="share-buttons hidden" id="shareButtons">
       <button class="btn-share btn-download" onclick="downloadCard()">⬇ Download Card</button>

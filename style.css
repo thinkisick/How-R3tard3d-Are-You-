@@ -132,53 +132,57 @@ body {
   40%          { transform: scale(1.2); opacity: 1; }
 }
 
-/* ── Tap to reveal ── */
-.reveal-overlay {
+/* ── 3D flip scene (replaces separate reveal-overlay + card-drop-wrap) ── */
+.card-flip-scene {
   width: 100%; max-width: 380px; margin-bottom: 22px;
-  cursor: pointer;
-  animation: cardReveal 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+  perspective: 1200px;
 }
+
+.card-flip-inner {
+  display: grid;
+  grid-template-areas: "card";
+  transform-style: preserve-3d;
+  /* transition set in JS so reset is instant */
+}
+
+.card-flip-inner.flipped { transform: rotateY(180deg); }
+
+.card-flip-back,
+.card-flip-front {
+  grid-area: card;
+  -webkit-backface-visibility: hidden; backface-visibility: hidden;
+}
+
+.card-flip-back  { cursor: pointer; }
+.card-flip-front { transform: rotateY(180deg); }
+
+/* Reveal back face */
 .reveal-back {
   background: linear-gradient(135deg, #3D1A70 0%, #1a0840 100%);
   border: 2px solid rgba(168,85,247,0.4);
   border-radius: 26px;
-  padding: 48px 24px;
-  display: flex; flex-direction: column; align-items: center; gap: 20px;
+  min-height: 560px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
   box-shadow: 0 0 40px rgba(168,85,247,0.3), 0 16px 48px rgba(0,0,0,0.5);
   transition: transform 0.15s, box-shadow 0.15s;
 }
-.reveal-back:hover {
-  transform: scale(1.02);
-  box-shadow: 0 0 60px rgba(168,85,247,0.45), 0 20px 60px rgba(0,0,0,0.6);
+.card-flip-back:hover .reveal-back {
+  transform: scale(1.01);
+  box-shadow: 0 0 60px rgba(168,85,247,0.5), 0 20px 60px rgba(0,0,0,0.6);
 }
 .reveal-face {
-  width: 100px; height: auto;
+  width: 110px; height: auto;
   animation: scanPulse 1.6s ease-in-out infinite;
 }
 .reveal-text {
   font-size: 1.1rem; font-weight: 700; color: #D4B0FF; letter-spacing: 0.5px;
 }
 
-@keyframes revealDismiss {
-  from { opacity: 1; transform: scale(1); }
-  to   { opacity: 0; transform: scale(1.15); }
-}
-.reveal-overlay.dismissing {
-  animation: revealDismiss 0.35s ease-in both;
-  pointer-events: none;
-}
-
 /* ══════════════════════════════════════════
    LOOT CARD
 ══════════════════════════════════════════ */
 .card-drop-wrap {
-  position: relative; width: 100%; max-width: 380px;
-  margin-bottom: 22px; border-radius: 26px;
-  animation: cardReveal 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
-}
-@keyframes cardReveal {
-  from { opacity: 0; transform: scale(0.75) translateY(40px); }
-  to   { opacity: 1; transform: scale(1) translateY(0); }
+  position: relative; width: 100%; border-radius: 26px;
 }
 
 /* Glow border (replaces spinning border — no rotation) */
