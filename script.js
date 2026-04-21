@@ -205,10 +205,23 @@ function revealCard() {
   const inner = document.getElementById('cardFlipInner');
   document.querySelector('.card-flip-back').style.visibility = 'hidden';
   if (navigator.vibrate) navigator.vibrate(20);
+
+  // Create AudioContext inside user gesture so iOS allows audio playback
+  let audioCtx = null;
+  try {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    // Silent buffer unlocks audio on iOS Safari
+    const buf = audioCtx.createBuffer(1, 1, 22050);
+    const src = audioCtx.createBufferSource();
+    src.buffer = buf; src.connect(audioCtx.destination); src.start(0);
+  } catch(e) { audioCtx = null; }
+
   inner.style.transition = 'transform 0.75s cubic-bezier(0.4,0.2,0.2,1)';
   inner.classList.add('flipped');
   setTimeout(() => {
     if (navigator.vibrate) navigator.vibrate([50, 30, 100]);
+    if (audioCtx) playRevealSound(audioCtx, currentRarity.id);
     const overlay = document.getElementById('bgOverlay');
     overlay.style.background = RARITY_BG[currentRarity.id] || '';
     overlay.classList.add('visible');
@@ -372,6 +385,56 @@ function copyResult() {
       setTimeout(() => btn.textContent = orig, 2000);
     });
   }
+}
+
+// ── Sound ──
+function playNote(ctx, freq, start, dur, type, vol) {
+  const osc = ctx.createOscillator();
+  const g   = ctx.createGain();
+  osc.connect(g); g.connect(ctx.destination);
+  osc.type = type;
+  osc.frequency.value = freq;
+  g.gain.setValueAtTime(0, start);
+  g.gain.linearRampToValueAtTime(vol, start + 0.015);
+  g.gain.exponentialRampToValueAtTime(0.001, start + dur);
+  osc.start(start);
+  osc.stop(start + dur + 0.05);
+}
+
+function playRevealSound(ctx, rarityId) {
+  const t = ctx.currentTime + 0.05;
+  try {
+    switch (rarityId) {
+      case 'legendary':
+        // Fast ascending arp → triumphant chord
+        [262, 330, 392, 523, 659].forEach((f, i) =>
+          playNote(ctx, f, t + i * 0.07, 0.4, 'sine', 0.22));
+        [523, 659, 784].forEach(f =>
+          playNote(ctx, f, t + 0.42, 1.4, 'sine', 0.18));
+        break;
+      case 'mythic':
+        [392, 494, 622, 784].forEach((f, i) =>
+          playNote(ctx, f, t + i * 0.1, 0.55, 'sine', 0.2));
+        break;
+      case 'epic':
+        [330, 415, 523, 659].forEach((f, i) =>
+          playNote(ctx, f, t + i * 0.1, 0.45, 'sine', 0.18));
+        break;
+      case 'rare':
+        [330, 415, 494].forEach((f, i) =>
+          playNote(ctx, f, t + i * 0.12, 0.4, 'sine', 0.18));
+        break;
+      case 'secret':
+        // Sad descending — wah wah feel
+        [440, 370, 311, 262].forEach((f, i) =>
+          playNote(ctx, f, t + i * 0.18, 0.55, 'triangle', 0.15));
+        break;
+      default: // common
+        [440, 554].forEach((f, i) =>
+          playNote(ctx, f, t + i * 0.12, 0.35, 'sine', 0.18));
+    }
+    setTimeout(() => { try { ctx.close(); } catch(e) {} }, 4000);
+  } catch(e) {}
 }
 
 // ── Ticker ──
